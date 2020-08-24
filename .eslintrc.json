@@ -1,0 +1,10 @@
+{
+  "root": true,
+  "extends": ["plugin:@blitz/recommended"],
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off"
+  }
+}
