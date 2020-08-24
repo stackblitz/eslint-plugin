@@ -22,7 +22,7 @@ export = {
 
     'dot-notation': 'error',
 
-    'no-unused-vars': 'error',
+    'no-unused-vars': 'off',
 
     'no-async-promise-executor': 'error',
 
@@ -68,9 +68,9 @@ export = {
       { blankLine: 'any', prev: '*', next: 'break' },
     ],
 
-    '@typescript-eslint/no-non-null-assertion': 0,
+    '@typescript-eslint/no-non-null-assertion': 'error',
 
-    '@typescript-eslint/no-unused-vars': 0,
+    '@typescript-eslint/no-unused-vars': 'error',
 
     '@typescript-eslint/naming-convention': [
       'error',
