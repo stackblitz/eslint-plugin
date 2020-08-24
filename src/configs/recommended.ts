@@ -30,8 +30,6 @@ export = {
 
     'default-case-last': 'error',
 
-    'newline-before-return': 'error',
-
     'no-cond-assign': 'error',
 
     'no-unneeded-ternary': 'error',
@@ -39,6 +37,20 @@ export = {
     'object-shorthand': 'error',
 
     'prefer-arrow-callback': 'error',
+
+    'lines-around-comment': [
+      'error',
+      {
+        beforeBlockComment: true,
+        beforeLineComment: true,
+        allowBlockStart: true,
+        allowBlockEnd: false,
+        allowObjectStart: true,
+        allowObjectEnd: false,
+        allowArrayStart: true,
+        allowArrayEnd: true,
+      },
+    ],
 
     'sort-imports': [
       'error',
@@ -125,5 +137,7 @@ export = {
     ],
 
     '@blitz/block-scope-case': 'error',
+
+    '@blitz/newline-before-return': 'error',
   },
 };

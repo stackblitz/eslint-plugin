@@ -40,3 +40,4 @@ and configure `parser` and `parserOptions`. For the plugin, you can omit the `es
 ## Custom Rules
 
 - [`@blitz/block-scope-case`](https://github.com/stackblitz/eslint-plugin/blob/master/docs/rules/block-scope-case.md) - Ensures all case statements are block scoped
+- [`@blitz/newline-before-return`](https://github.com/stackblitz/eslint-plugin/blob/master/docs/rules/newline-before-return.md) - Require an empty line before 'return' statements
