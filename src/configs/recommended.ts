@@ -72,6 +72,8 @@ export = {
 
     '@typescript-eslint/no-unused-vars': 'error',
 
+    '@typescript-eslint/no-explicit-any': 'off',
+
     '@typescript-eslint/naming-convention': [
       'error',
       {

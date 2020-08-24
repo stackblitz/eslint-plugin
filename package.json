@@ -20,7 +20,8 @@
     "build": "tsc -b",
     "test": "jest",
     "preversion": "npm test",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^3.9.1",

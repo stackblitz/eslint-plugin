@@ -25,7 +25,7 @@ export default ESLintUtils.RuleCreator((ruleName) => ruleName)({
       SwitchCase: (node) => {
         if (node.consequent[0].type !== 'BlockStatement') {
           context.report({
-            node: node,
+            node,
             loc: {
               column: node.loc.start.column + (node.test ? 'case'.length : 'default'.length),
               line: node.loc.start.line,
