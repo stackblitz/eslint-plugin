@@ -53,7 +53,7 @@ export = {
       {
         blankLine: 'always',
         prev: '*',
-        next: ['block', 'block-like', 'cjs-export', 'class', 'const', 'export', 'let'],
+        next: ['block', 'block-like', 'class', 'const', 'let'],
       },
       {
         blankLine: 'never',
@@ -98,6 +98,8 @@ export = {
         leadingUnderscore: 'require',
       },
     ],
+
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
 
     '@typescript-eslint/no-extra-non-null-assertion': 'error',
 
