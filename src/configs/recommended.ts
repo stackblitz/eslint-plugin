@@ -87,7 +87,7 @@ export = {
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {
-        args: 'none',
+        argsIgnorePattern: '^_',
         ignoreRestSiblings: true,
       },
     ],
