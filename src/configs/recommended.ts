@@ -22,6 +22,8 @@ export = {
 
     'dot-notation': 'error',
 
+    'no-debugger': 'warn',
+
     'no-unused-vars': 'off',
 
     'no-async-promise-executor': 'error',
