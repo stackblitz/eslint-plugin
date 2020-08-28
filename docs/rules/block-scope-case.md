@@ -1,4 +1,4 @@
-# block-scope-case
+# `@blitz/block-scope-case`
 
 > Ensures all case statements are block scoped.
 

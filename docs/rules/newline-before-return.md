@@ -1,4 +1,4 @@
-# block-scope-case
+# `@blitz/block-scope-case`
 
 > Require an empty line before 'return' statements, only for block statemenet with more than 2 nodes
 

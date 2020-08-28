@@ -40,20 +40,6 @@ export = {
 
     'prefer-arrow-callback': 'error',
 
-    'lines-around-comment': [
-      'error',
-      {
-        beforeBlockComment: true,
-        beforeLineComment: true,
-        allowBlockStart: true,
-        allowBlockEnd: false,
-        allowObjectStart: true,
-        allowObjectEnd: false,
-        allowArrayStart: true,
-        allowArrayEnd: true,
-      },
-    ],
-
     'sort-imports': [
       'error',
       {
@@ -143,6 +129,22 @@ export = {
         'ts-ignore': 'allow-with-description',
         'ts-nocheck': true,
         'ts-check': false,
+      },
+    ],
+
+    '@blitz/lines-around-comment': [
+      'error',
+      {
+        beforeBlockComment: true,
+        beforeLineComment: true,
+        allowBlockStart: true,
+        allowBlockEnd: false,
+        allowObjectStart: true,
+        allowObjectEnd: false,
+        allowArrayStart: true,
+        allowArrayEnd: true,
+        allowInterfaceStart: true,
+        allowInterfaceEnd: true,
       },
     ],
 

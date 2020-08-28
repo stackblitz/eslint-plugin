@@ -3,5 +3,8 @@
   "extends": ["plugin:@blitz/recommended"],
   "env": {
     "node": true
+  },
+  "rules": {
+    "@typescript-eslint/no-var-requires": 0
   }
 }

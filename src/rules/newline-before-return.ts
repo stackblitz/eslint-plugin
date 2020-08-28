@@ -1,11 +1,12 @@
-import { ESLintUtils, TSESTree } from '@typescript-eslint/experimental-utils';
+import { TSESTree } from '@typescript-eslint/experimental-utils';
 import { oneLine } from 'common-tags';
+import { createRule } from '../util';
 
 export const ruleName = 'newline-before-return';
 
 export const messageId = 'default';
 
-export default ESLintUtils.RuleCreator((ruleName) => ruleName)({
+export default createRule({
   name: ruleName,
   meta: {
     type: 'layout',

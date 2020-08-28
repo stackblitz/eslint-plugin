@@ -1,10 +1,10 @@
-import { ESLintUtils } from '@typescript-eslint/experimental-utils';
+import { createRule } from '../util';
 
 export const ruleName = 'block-scope-case';
 
 export const messageId = 'default';
 
-export default ESLintUtils.RuleCreator((ruleName) => ruleName)({
+export default createRule({
   name: ruleName,
   meta: {
     type: 'layout',
