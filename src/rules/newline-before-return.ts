@@ -6,7 +6,15 @@ export const ruleName = 'newline-before-return';
 
 export const messageId = 'default';
 
-export default createRule({
+type Options = [
+  {
+    maxConsecutiveLines: number;
+  }
+];
+
+type MessageIds = typeof messageId;
+
+export default createRule<Options, MessageIds>({
   name: ruleName,
   meta: {
     type: 'layout',
@@ -18,13 +26,29 @@ export default createRule({
       recommended: 'error',
     },
     fixable: 'whitespace',
-    schema: [],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          maxConsecutiveLines: {
+            type: 'number',
+            default: 2,
+          },
+        },
+      },
+    ],
     messages: {
       [messageId]: 'Expected newline before return statement.',
     },
   },
-  defaultOptions: [],
-  create: (context) => {
+  defaultOptions: [
+    {
+      maxConsecutiveLines: 2,
+    },
+  ],
+  create: (context, [options]) => {
+    const { maxConsecutiveLines } = options;
+
     const sourceCode = context.getSourceCode();
 
     function calcCommentLines(node: TSESTree.Node, lineNumTokenBefore: number) {
@@ -92,7 +116,7 @@ export default createRule({
           return;
         }
 
-        if (!block.body.length || block.body.length <= 2 || hasNewlineBefore(node)) {
+        if (!block.body.length || block.body.length <= maxConsecutiveLines || hasNewlineBefore(node)) {
           return;
         }
 

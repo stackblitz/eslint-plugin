@@ -48,3 +48,22 @@ function foo() {
   return true;
 }
 ```
+
+## Options
+
+```ts
+type Options = [
+  {
+    maxConsecutiveLines: number;
+  }
+];
+
+const defaultOptions: Options = {
+  maxConsecutiveLines: 2,
+};
+```
+
+### `maxConsecutiveLines`
+
+This option defines the maximum number of consecutive lines that are allowed **without** a newline before the
+`return` statement.
