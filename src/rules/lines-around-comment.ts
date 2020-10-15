@@ -134,7 +134,10 @@ export default createRule<Options, MessageIds>({
         report: {
           enumerable: true,
           value(descriptor: TSESLint.ReportDescriptor<MessageIds> & { node: TSESTree.Token }) {
+            const parentNode = getParentNodeOfToken(descriptor.node);
+
             if (
+              (parentNode && parentNode.type === 'CallExpression') ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceStart) ||
               (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd)
             ) {
