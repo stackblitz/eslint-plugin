@@ -65,6 +65,11 @@ export = {
         prev: ['const', 'let'],
         next: ['const', 'let'],
       },
+      {
+        blankLine: 'any',
+        prev: ['export'],
+        next: ['export'],
+      },
       { blankLine: 'any', prev: '*', next: 'break' },
     ],
 
