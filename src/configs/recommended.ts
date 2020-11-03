@@ -14,7 +14,7 @@ export = {
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
   ],
-  plugins: ['@blitz'],
+  plugins: ['@blitz', 'unused-imports'],
   rules: {
     'consistent-return': 'error',
 
@@ -43,7 +43,7 @@ export = {
     'sort-imports': [
       'error',
       {
-        ignoreCase: true,
+        ignoreCase: false,
         ignoreDeclarationSort: true,
       },
     ],
@@ -73,17 +73,18 @@ export = {
       { blankLine: 'any', prev: '*', next: 'break' },
     ],
 
+    'unused-imports/no-unused-imports-ts': 'error',
+
+    'unused-imports/no-unused-vars-ts': [
+      'error',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+    ],
+
     '@typescript-eslint/no-non-null-assertion': 'off',
 
     '@typescript-eslint/no-empty-function': 'warn',
 
-    '@typescript-eslint/no-unused-vars': [
-      'warn',
-      {
-        argsIgnorePattern: '^_',
-        ignoreRestSiblings: true,
-      },
-    ],
+    '@typescript-eslint/no-unused-vars': 'off',
 
     '@typescript-eslint/no-explicit-any': 'off',
 
