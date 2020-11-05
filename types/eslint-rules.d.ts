@@ -27,5 +27,6 @@ declare module 'eslint/lib/rules/lines-around-comment' {
       Program(node: TSESTree.Program): void;
     }
   >;
+
   export = rule;
 }

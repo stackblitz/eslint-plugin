@@ -40,14 +40,6 @@ export = {
 
     'prefer-arrow-callback': 'error',
 
-    'sort-imports': [
-      'error',
-      {
-        ignoreCase: false,
-        ignoreDeclarationSort: true,
-      },
-    ],
-
     'padding-line-between-statements': [
       'error',
       {
