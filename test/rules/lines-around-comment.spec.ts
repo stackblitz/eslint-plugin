@@ -7,8 +7,8 @@ ruleTester().run(ruleName, rule, {
     {
       code: stripIndent`
         interface Foo {
-            // bar
-            x: 1
+          // bar
+          x: 1
         };
       `,
       options: [
@@ -22,10 +22,10 @@ ruleTester().run(ruleName, rule, {
     {
       code: stripIndent`
         export interface Foo {
-            x: {
-                // bar
-                [key: string]: string;
-            };
+          x: {
+            // bar
+            [key: string]: string;
+          };
         }
       `,
       options: [
