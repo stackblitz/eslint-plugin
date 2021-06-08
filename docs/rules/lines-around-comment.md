@@ -5,7 +5,7 @@
 ## Rule Details
 
 This rule extends the base [`eslint/lines-around-comment`](https://eslint.org/docs/rules/lines-around-comment) rule.
-It adds support for allowing comments at the start and end of `Interface`'s.
+It adds support for allowing comments at the start and end of `Interface`'s and type literals.
 
 ## How to use
 
@@ -26,6 +26,8 @@ interface Options extends BaseLinesAroundCommentOptions {
   allowInterfaceEnd?: boolean;
 }
 ```
+
+It also overrides `allowObjectStart` and `allowObjectEnd` to work with type object literals.
 
 ### `allowInterfaceStart`
 

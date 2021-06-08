@@ -7,6 +7,25 @@ export const ruleName = 'lines-around-comment';
 export type Options = InferOptionsTypeFromRule<typeof baseRule>;
 export type MessageIds = InferMessageIdsTypeFromRule<typeof baseRule>;
 
+export const defaultOptions = {
+  beforeBlockComment: true,
+  afterBlockComment: false,
+  beforeLineComment: false,
+  afterLineComment: false,
+  allowBlockStart: false,
+  allowBlockEnd: false,
+  allowObjectStart: false,
+  allowObjectEnd: false,
+  allowArrayStart: false,
+  allowArrayEnd: false,
+  allowClassStart: false,
+  allowClassEnd: false,
+  allowInterfaceStart: false,
+  allowInterfaceEnd: false,
+  applyDefaultIgnorePatterns: false,
+  ignorePattern: '',
+};
+
 export default createRule<Options, MessageIds>({
   name: ruleName,
   meta: {
@@ -85,26 +104,7 @@ export default createRule<Options, MessageIds>({
     fixable: baseRule.meta.fixable,
     messages: baseRule.meta.messages,
   },
-  defaultOptions: [
-    {
-      beforeBlockComment: true,
-      afterBlockComment: false,
-      beforeLineComment: false,
-      afterLineComment: false,
-      allowBlockStart: false,
-      allowBlockEnd: false,
-      allowObjectStart: false,
-      allowObjectEnd: false,
-      allowArrayStart: false,
-      allowArrayEnd: false,
-      allowClassStart: false,
-      allowClassEnd: false,
-      allowInterfaceStart: false,
-      allowInterfaceEnd: false,
-      applyDefaultIgnorePatterns: false,
-      ignorePattern: '',
-    },
-  ],
+  defaultOptions: [defaultOptions],
   create(context, [options]) {
     const sourceCode = context.getSourceCode();
 
@@ -128,6 +128,8 @@ export default createRule<Options, MessageIds>({
 
     const allowInterfaceStart = options?.allowInterfaceStart;
     const allowInterfaceEnd = options?.allowInterfaceEnd;
+    const allowObjectStart = options?.allowObjectStart;
+    const allowObjectEnd = options?.allowObjectEnd;
 
     const rules = baseRule.create(
       Object.create(context, {
@@ -139,7 +141,9 @@ export default createRule<Options, MessageIds>({
             if (
               (parentNode && parentNode.type === 'CallExpression') ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceStart) ||
-              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd)
+              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd) ||
+              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectStart) ||
+              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectEnd)
             ) {
               return;
             }
