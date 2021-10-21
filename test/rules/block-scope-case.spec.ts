@@ -16,6 +16,21 @@ ruleTester().run(ruleName, rule, {
         }
       `
     ),
+    fromFixture(
+      stripIndent`
+        const foo = 1;
+
+        switch (foo) {
+          case 1: {
+            break;
+          }
+          case 2:
+          case 3: {
+            break;
+          }
+        }
+      `
+    ),
   ],
   invalid: [
     {

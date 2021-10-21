@@ -61,6 +61,11 @@ export = {
         prev: ['export'],
         next: ['export'],
       },
+      {
+        blankLine: 'any',
+        prev: 'case',
+        next: 'case',
+      },
       { blankLine: 'any', prev: '*', next: 'break' },
     ],
 

@@ -23,7 +23,7 @@ export default createRule({
   create: (context) => {
     return {
       SwitchCase: (node) => {
-        if (node.consequent[0].type !== 'BlockStatement') {
+        if (node.consequent.length > 0 && node.consequent[0].type !== 'BlockStatement') {
           context.report({
             node,
             loc: {
