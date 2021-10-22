@@ -160,12 +160,12 @@ export default createRule<Options, MessageIds>({
       return parent && isParentNodeType(parent, nodeType) && parent.loc.end.line - token.loc.end.line === 1;
     }
 
-    function isMemberCallExpression(node: TSESTree.Node | null) {
+    function isMemberExpression(node: TSESTree.Node | null, objectType: AST_NODE_TYPES) {
       if (node == null) {
         return false;
       }
 
-      return node.type === AST_NODE_TYPES.MemberExpression && node.object.type === AST_NODE_TYPES.CallExpression;
+      return node.type === AST_NODE_TYPES.MemberExpression && node.object.type === objectType;
     }
 
     const allowSwitchStart = options?.allowSwitchStart;
@@ -195,7 +195,9 @@ export default createRule<Options, MessageIds>({
               (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd) ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectStart) ||
               (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectEnd) ||
-              (isMemberCallExpression(parentNode) && allowMemberCallExpression)
+              ((isMemberExpression(parentNode, AST_NODE_TYPES.CallExpression) ||
+                isMemberExpression(parentNode, AST_NODE_TYPES.Identifier)) &&
+                allowMemberCallExpression)
             ) {
               return;
             }

@@ -10,10 +10,3 @@ export function ruleTester() {
     },
   });
 }
-
-enum MyEnum {
-  Value,
-  /** comment */
-}
-
-MyEnum;

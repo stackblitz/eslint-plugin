@@ -180,4 +180,8 @@ doSomething()
   .doSomeMore('', '')
   // some comment
   .doSomeMore('', '');
+
+someIdentifier
+  // some comment
+  .someFn('', '');
 ```
