@@ -153,6 +153,8 @@ export = {
         allowInterfaceEnd: true,
         allowEnumStart: true,
         allowEnumEnd: true,
+        allowSwitchStart: true,
+        allowSwitchEnd: false,
       },
     ],
 

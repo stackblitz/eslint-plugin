@@ -22,6 +22,8 @@ This rule adds the following options:
 
 ```ts
 interface Options extends BaseLinesAroundCommentOptions {
+  allowSwitchStart?: boolean;
+  allowSwitchEnd?: boolean;
   allowEnumStart?: boolean;
   allowEnumEnd?: boolean;
   allowInterfaceStart?: boolean;
@@ -98,5 +100,63 @@ enum MyEnum {
 enum MyEnum {
   Value,
   /** comment */
+}
+```
+
+### `allowSwitchStart`
+
+Example of a correct code when `allowSwitchStart` is set to `true`:
+
+```ts
+switch (someValue) {
+  // some comment
+  case 'foo': {
+    // todo
+  }
+}
+
+switch (someValue) {
+  /* some comment */
+  case 'foo': {
+    // todo
+  }
+}
+
+switch (someValue) {
+  /**
+   * Some comment.
+   */
+  case 'foo': {
+    // todo
+  }
+}
+```
+
+### `allowSwitchEnd`
+
+Example of a correct code when `allowSwitchEnd` is set to `true`:
+
+```ts
+switch (someValue) {
+  case 'foo': {
+    // todo
+  }
+  // some comment
+}
+
+switch (someValue) {
+  case 'foo': {
+    // todo
+  }
+  /* some comment */
+}
+
+switch (someValue) {
+  case 'foo': {
+    // todo
+  }
+  /**
+   * Some comment.
+   */
 }
 ```

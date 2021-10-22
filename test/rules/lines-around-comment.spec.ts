@@ -91,6 +91,106 @@ ruleTester().run(ruleName, rule, {
         },
       ],
     },
+    {
+      code: stripIndent`
+        switch (1) {
+          /**
+           * Some comment.
+           */
+          case 1: {
+            // todo
+          }
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowSwitchStart: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        switch (1) {
+          /* some comment */
+          case 1: {
+            // todo
+          }
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowSwitchStart: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        switch (1) {
+          // some comment
+          case 1: {
+            // todo
+          }
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowSwitchStart: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        switch (1) {
+          case 1: {
+            // todo
+          }
+          // some comment
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowSwitchEnd: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        switch (1) {
+          case 1: {
+            // todo
+          }
+          /* some comment */
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowSwitchEnd: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        switch (1) {
+          case 1: {
+            // todo
+          }
+          /**
+           * Some comment.
+           */
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowSwitchEnd: true,
+        },
+      ],
+    },
   ],
   invalid: [],
 });

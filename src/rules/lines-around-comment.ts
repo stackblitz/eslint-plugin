@@ -22,6 +22,8 @@ export const defaultOptions = {
   allowClassEnd: false,
   allowEnumStart: false,
   allowEnumEnd: false,
+  allowSwitchStart: false,
+  allowSwitchEnd: false,
   allowInterfaceStart: false,
   allowInterfaceEnd: false,
   applyDefaultIgnorePatterns: false,
@@ -66,6 +68,14 @@ export default createRule<Options, MessageIds>({
             default: false,
           },
           allowBlockEnd: {
+            type: 'boolean',
+            default: false,
+          },
+          allowSwitchStart: {
+            type: 'boolean',
+            default: false,
+          },
+          allowSwitchEnd: {
             type: 'boolean',
             default: false,
           },
@@ -145,6 +155,8 @@ export default createRule<Options, MessageIds>({
       return parent && isParentNodeType(parent, nodeType) && parent.loc.end.line - token.loc.end.line === 1;
     }
 
+    const allowSwitchStart = options?.allowSwitchStart;
+    const allowSwitchEnd = options?.allowSwitchEnd;
     const allowEnumStart = options?.allowEnumStart;
     const allowEnumEnd = options?.allowEnumEnd;
     const allowInterfaceStart = options?.allowInterfaceStart;
@@ -161,6 +173,8 @@ export default createRule<Options, MessageIds>({
 
             if (
               (parentNode && parentNode.type === 'CallExpression') ||
+              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.SwitchStatement) && allowSwitchStart) ||
+              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.SwitchStatement) && allowSwitchEnd) ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSEnumDeclaration) && allowEnumStart) ||
               (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSEnumDeclaration) && allowEnumEnd) ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceStart) ||
