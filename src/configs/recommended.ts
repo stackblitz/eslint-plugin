@@ -141,6 +141,7 @@ export = {
     '@blitz/lines-around-comment': [
       'error',
       {
+        allowClassStart: true,
         beforeBlockComment: true,
         beforeLineComment: true,
         allowBlockStart: true,
@@ -155,6 +156,7 @@ export = {
         allowEnumEnd: true,
         allowSwitchStart: true,
         allowSwitchEnd: false,
+        allowMemberCallExpression: true,
       },
     ],
 

@@ -28,6 +28,7 @@ interface Options extends BaseLinesAroundCommentOptions {
   allowEnumEnd?: boolean;
   allowInterfaceStart?: boolean;
   allowInterfaceEnd?: boolean;
+  allowMemberCallExpression?: boolean;
 }
 ```
 
@@ -159,4 +160,24 @@ switch (someValue) {
    * Some comment.
    */
 }
+```
+
+### `allowMemberCallExpression`
+
+Example of a correct code when `allowMemberCallExpression` is set to `true`:
+
+```ts
+doSomething()
+  .a // some comment
+  .b // some comment
+  .c // some comment
+  .d.replace('', '');
+
+doSomething()
+  // some comment
+  .doSomeMore('', '')
+  // some comment
+  .doSomeMore('', '')
+  // some comment
+  .doSomeMore('', '');
 ```

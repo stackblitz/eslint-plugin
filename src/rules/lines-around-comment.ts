@@ -26,6 +26,7 @@ export const defaultOptions = {
   allowSwitchEnd: false,
   allowInterfaceStart: false,
   allowInterfaceEnd: false,
+  allowMemberCallExpression: false,
   applyDefaultIgnorePatterns: false,
   ignorePattern: '',
 };
@@ -119,6 +120,10 @@ export default createRule<Options, MessageIds>({
             type: 'boolean',
             default: false,
           },
+          allowMemberCallExpression: {
+            type: 'boolean',
+            default: false,
+          },
           ignorePattern: {
             type: 'string',
           },
@@ -155,6 +160,14 @@ export default createRule<Options, MessageIds>({
       return parent && isParentNodeType(parent, nodeType) && parent.loc.end.line - token.loc.end.line === 1;
     }
 
+    function isMemberCallExpression(node: TSESTree.Node | null) {
+      if (node == null) {
+        return false;
+      }
+
+      return node.type === AST_NODE_TYPES.MemberExpression && node.object.type === AST_NODE_TYPES.CallExpression;
+    }
+
     const allowSwitchStart = options?.allowSwitchStart;
     const allowSwitchEnd = options?.allowSwitchEnd;
     const allowEnumStart = options?.allowEnumStart;
@@ -163,6 +176,7 @@ export default createRule<Options, MessageIds>({
     const allowInterfaceEnd = options?.allowInterfaceEnd;
     const allowObjectStart = options?.allowObjectStart;
     const allowObjectEnd = options?.allowObjectEnd;
+    const allowMemberCallExpression = options?.allowMemberCallExpression;
 
     const rules = baseRule.create(
       Object.create(context, {
@@ -180,7 +194,8 @@ export default createRule<Options, MessageIds>({
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceStart) ||
               (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd) ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectStart) ||
-              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectEnd)
+              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectEnd) ||
+              (isMemberCallExpression(parentNode) && allowMemberCallExpression)
             ) {
               return;
             }
