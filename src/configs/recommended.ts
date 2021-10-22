@@ -151,6 +151,8 @@ export = {
         allowArrayEnd: true,
         allowInterfaceStart: true,
         allowInterfaceEnd: true,
+        allowEnumStart: true,
+        allowEnumEnd: true,
       },
     ],
 

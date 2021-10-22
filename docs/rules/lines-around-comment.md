@@ -5,7 +5,7 @@
 ## Rule Details
 
 This rule extends the base [`eslint/lines-around-comment`](https://eslint.org/docs/rules/lines-around-comment) rule.
-It adds support for allowing comments at the start and end of `Interface`'s and type literals.
+It adds support for allowing comments at the start and end of `interface`'s, type literals and `enum`s.
 
 ## How to use
 
@@ -22,6 +22,8 @@ This rule adds the following options:
 
 ```ts
 interface Options extends BaseLinesAroundCommentOptions {
+  allowEnumStart?: boolean;
+  allowEnumEnd?: boolean;
   allowInterfaceStart?: boolean;
   allowInterfaceEnd?: boolean;
 }
@@ -58,5 +60,43 @@ interface InterfaceA {
 
 interface InterfaceA {
   foo: boolean /** comment */;
+}
+```
+
+### `allowEnumStart`
+
+Example of a correct code when `allowEnumStart` is set to `true`:
+
+```ts
+enum MyEnum {
+  // some comment
+  Value,
+}
+
+enum MyEnum {
+  /**
+   * Some multi-line comment
+   */
+  Value,
+}
+```
+
+### `allowEnumEnd`
+
+Example of a correct code when `allowEnumEnd` is set to `true`:
+
+```ts
+enum MyEnum {
+  // some comment
+  Value,
+}
+
+enum MyEnum {
+  Value /* some comment */,
+}
+
+enum MyEnum {
+  Value,
+  /** comment */
 }
 ```

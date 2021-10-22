@@ -36,6 +36,61 @@ ruleTester().run(ruleName, rule, {
         },
       ],
     },
+    {
+      code: stripIndent`
+        enum MyEnum {
+          // some comment
+          Value,
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowEnumStart: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        enum MyEnum {
+          Value,
+          // some comment
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowEnumEnd: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        enum MyEnum {
+          Value /* some comment */,
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowEnumEnd: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        enum MyEnum {
+          Value,
+          /* some comment */
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowEnumEnd: true,
+        },
+      ],
+    },
   ],
   invalid: [],
 });

@@ -4,7 +4,7 @@ import { createRule, InferMessageIdsTypeFromRule, InferOptionsTypeFromRule } fro
 
 export const ruleName = 'lines-around-comment';
 
-export type Options = InferOptionsTypeFromRule<typeof baseRule>;
+export type BaseOptions = InferOptionsTypeFromRule<typeof baseRule>;
 export type MessageIds = InferMessageIdsTypeFromRule<typeof baseRule>;
 
 export const defaultOptions = {
@@ -20,11 +20,15 @@ export const defaultOptions = {
   allowArrayEnd: false,
   allowClassStart: false,
   allowClassEnd: false,
+  allowEnumStart: false,
+  allowEnumEnd: false,
   allowInterfaceStart: false,
   allowInterfaceEnd: false,
   applyDefaultIgnorePatterns: false,
   ignorePattern: '',
 };
+
+type Options = [(typeof defaultOptions | undefined)?];
 
 export default createRule<Options, MessageIds>({
   name: ruleName,
@@ -65,37 +69,52 @@ export default createRule<Options, MessageIds>({
             type: 'boolean',
             default: false,
           },
+          allowEnumStart: {
+            type: 'boolean',
+            default: false,
+          },
+          allowEnumEnd: {
+            type: 'boolean',
+            default: false,
+          },
           allowInterfaceStart: {
             type: 'boolean',
-            default: true,
+            default: false,
           },
           allowInterfaceEnd: {
             type: 'boolean',
-            default: true,
+            default: false,
           },
           allowClassStart: {
             type: 'boolean',
+            default: false,
           },
           allowClassEnd: {
             type: 'boolean',
+            default: false,
           },
           allowObjectStart: {
             type: 'boolean',
+            default: false,
           },
           allowObjectEnd: {
             type: 'boolean',
+            default: false,
           },
           allowArrayStart: {
             type: 'boolean',
+            default: false,
           },
           allowArrayEnd: {
             type: 'boolean',
+            default: false,
           },
           ignorePattern: {
             type: 'string',
           },
           applyDefaultIgnorePatterns: {
             type: 'boolean',
+            default: false,
           },
         },
         additionalProperties: false,
@@ -126,6 +145,8 @@ export default createRule<Options, MessageIds>({
       return parent && isParentNodeType(parent, nodeType) && parent.loc.end.line - token.loc.end.line === 1;
     }
 
+    const allowEnumStart = options?.allowEnumStart;
+    const allowEnumEnd = options?.allowEnumEnd;
     const allowInterfaceStart = options?.allowInterfaceStart;
     const allowInterfaceEnd = options?.allowInterfaceEnd;
     const allowObjectStart = options?.allowObjectStart;
@@ -140,6 +161,8 @@ export default createRule<Options, MessageIds>({
 
             if (
               (parentNode && parentNode.type === 'CallExpression') ||
+              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSEnumDeclaration) && allowEnumStart) ||
+              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSEnumDeclaration) && allowEnumEnd) ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceStart) ||
               (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd) ||
               (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectStart) ||
