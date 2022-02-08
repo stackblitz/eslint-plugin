@@ -16,6 +16,28 @@ type MessageIds =
   | 'shouldStartWithSpace'
   | 'shouldStartWithBlock';
 
+const isCapital = (char: string) => {
+  return char !== char.toLowerCase();
+};
+
+const isWholeFirstWordCapital = (sentence: string) => {
+  for (let char of sentence) {
+    if (char.charCodeAt(0) === SPACE_CHARCODE) {
+      return true;
+    }
+
+    if (!isCapital(char)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const isLetter = (char: string) => {
+  return char.toLowerCase() !== char.toUpperCase();
+};
+
 export default createRule<Options, MessageIds>({
   name: ruleName,
   meta: {
@@ -31,7 +53,7 @@ export default createRule<Options, MessageIds>({
     messages: {
       shouldStartWithSpace: 'A line comment should start with a space',
       shouldStartWithBlock: 'A block comment should start with /**\n *',
-      lineCommentCapital: 'A line comment cannot start with a capital letter unless the entire word is',
+      lineCommentCapital: 'A line comment cannot start with a capital letter unless the entire word is capitalised',
       lineCommentEnding: 'A line comment cannot end with a dot',
       blockCommentCapital: 'A block comment has to start with a capital letter',
       blockCommentEnding: 'A block comment has to end with a dot',
@@ -39,34 +61,12 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [],
   create: (context) => {
-    const source = context.getSourceCode();
-
-    const comments = source.getAllComments();
-
-    const isCapital = (char: string) => {
-      return char !== char.toLowerCase();
-    };
-
-    const isWholeFirstWordCapital = (sentence: string) => {
-      for (let char of sentence) {
-        if (char.charCodeAt(0) === SPACE_CHARCODE) {
-          return true;
-        }
-
-        if (!isCapital(char)) {
-          return false;
-        }
-      }
-
-      return true;
-    };
-
-    const isLetter = (c: string) => {
-      return c.toLowerCase() != c.toUpperCase();
-    };
-
     return {
       Program() {
+        const source = context.getSourceCode();
+
+        const comments = source.getAllComments();
+
         for (const comment of comments) {
           if (comment.type === 'Line') {
             const secondChar = comment.value[1];
