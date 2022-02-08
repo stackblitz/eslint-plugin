@@ -12,17 +12,51 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+          // SHOULD be valid
+        `
+    ),
+    fromFixture(
+      stripIndent`
+          // \` should be valid
+        `
+    ),
+    fromFixture(
+      stripIndent`
         /**
          * This should start with a capital and end with a dot.
          */
       `
     ),
+    fromFixture(
+      stripIndent`
+          /**
+           * THIS should start with a capital and end with a dot.
+           */
+        `
+    ),
+    fromFixture(
+      stripIndent`
+            /**
+             * \` should be valid.
+             */
+        `
+    ),
   ],
   invalid: [
     {
       code: stripIndent`
-        // Should throw
-      `,
+            //should throw
+          `,
+      errors: [
+        {
+          messageId: 'shouldStartWithSpace',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+              // THiS throw
+            `,
       errors: [
         {
           messageId: 'lineCommentCapital',
@@ -31,8 +65,18 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-          // should throw for the .
+          // Should throw
         `,
+      errors: [
+        {
+          messageId: 'lineCommentCapital',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+            // should throw for the .
+          `,
       errors: [
         {
           messageId: 'lineCommentEnding',
@@ -41,10 +85,10 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-          /**
-           * should throw for the lack of capital.
-           */
-        `,
+            /**
+             * should throw for the lack of capital.
+             */
+          `,
       errors: [
         {
           messageId: 'blockCommentCapital',
@@ -53,13 +97,36 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-            /**
-             * Should throw for the lack of capital
-             */
-        `,
+              /**
+               * Should throw for the lack of capital
+               */
+          `,
       errors: [
         {
           messageId: 'blockCommentEnding',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+                /**               * Should throw for lack of newline.
+                 */
+            `,
+      errors: [
+        {
+          messageId: 'shouldStartWithBlock',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+                /**
+                 *Should throw for the lack of a space.
+                 */
+            `,
+      errors: [
+        {
+          messageId: 'shouldStartWithBlock',
         },
       ],
     },

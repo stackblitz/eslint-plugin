@@ -4,7 +4,17 @@ export const ruleName = 'comment-syntax';
 
 type Options = [];
 
-type MessageIds = 'lineCommentCapital' | 'lineCommentEnding' | 'blockCommentCapital' | 'blockCommentEnding';
+const SPACE_CHARCODE = 32;
+const NEWLINE_CHARCODE = 10;
+const STAR_CHARCODE = 42;
+
+type MessageIds =
+  | 'lineCommentCapital'
+  | 'lineCommentEnding'
+  | 'blockCommentCapital'
+  | 'blockCommentEnding'
+  | 'shouldStartWithSpace'
+  | 'shouldStartWithBlock';
 
 export default createRule<Options, MessageIds>({
   name: ruleName,
@@ -19,7 +29,9 @@ export default createRule<Options, MessageIds>({
     fixable: 'code',
     schema: [],
     messages: {
-      lineCommentCapital: 'A line comment cannot start with a capital letter',
+      shouldStartWithSpace: 'A line comment should start with a space',
+      shouldStartWithBlock: 'A block comment should start with /**\n *',
+      lineCommentCapital: 'A line comment cannot start with a capital letter unless the entire word is',
       lineCommentEnding: 'A line comment cannot end with a dot',
       blockCommentCapital: 'A block comment has to start with a capital letter',
       blockCommentEnding: 'A block comment has to end with a dot',
@@ -35,15 +47,39 @@ export default createRule<Options, MessageIds>({
       return char !== char.toLowerCase();
     };
 
+    const isWholeFirstWordCapital = (sentence: string) => {
+      for (let char of sentence) {
+        if (char.charCodeAt(0) === SPACE_CHARCODE) {
+          return true;
+        }
+
+        if (!isCapital(char)) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    const isLetter = (c: string) => {
+      return c.toLowerCase() != c.toUpperCase();
+    };
+
     return {
       Program() {
         for (const comment of comments) {
           if (comment.type === 'Line') {
-            // prettier will add a space after the '//' by default so we need the second index
-            const firstChar = comment.value[1];
+            const secondChar = comment.value[1];
             const lastChar = comment.value[comment.value.length - 1];
 
-            if (isCapital(firstChar)) {
+            if (comment.value.charCodeAt(0) !== SPACE_CHARCODE) {
+              context.report({ node: comment, messageId: 'shouldStartWithSpace' });
+
+              // if this one fails, the others are interpreted incorrectly
+              continue;
+            }
+
+            if (isLetter(secondChar) && isCapital(secondChar) && !isWholeFirstWordCapital(comment.value.slice(1))) {
               context.report({ node: comment, messageId: 'lineCommentCapital' });
             }
 
@@ -55,11 +91,23 @@ export default createRule<Options, MessageIds>({
           }
 
           if (comment.type === 'Block') {
-            // prettier will add format it so the firstChar is at index 5
-            const firstChar = comment.value[5];
+            const [firstChar, secondChar, thirdChar, fourthChar, fifthChar, sixthChar] = comment.value;
             const lastChar = comment.value[comment.value.length - 3];
 
-            if (!isCapital(firstChar)) {
+            if (
+              firstChar.charCodeAt(0) !== STAR_CHARCODE ||
+              secondChar.charCodeAt(0) !== NEWLINE_CHARCODE ||
+              thirdChar.charCodeAt(0) !== SPACE_CHARCODE ||
+              fourthChar.charCodeAt(0) !== STAR_CHARCODE ||
+              fifthChar.charCodeAt(0) !== SPACE_CHARCODE
+            ) {
+              context.report({ node: comment, messageId: 'shouldStartWithBlock' });
+
+              // if this one fails, the others are interpreted incorrectly
+              continue;
+            }
+
+            if (isLetter(sixthChar) && !isCapital(sixthChar)) {
               context.report({ node: comment, messageId: 'blockCommentCapital' });
             }
 
