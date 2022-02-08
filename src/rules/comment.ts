@@ -17,7 +17,7 @@ type MessageIds =
   | 'shouldStartWithBlock';
 
 const isCapital = (char: string) => {
-  return char !== char.toLowerCase();
+  return char === char.toUpperCase();
 };
 
 const isWholeFirstWordCapital = (sentence: string) => {
