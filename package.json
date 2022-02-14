@@ -1,6 +1,6 @@
 {
   "name": "@blitz/eslint-plugin",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "An ESLint config to enforce a consistent code styles across StackBlitz projects",
   "keywords": [
     "eslint",
