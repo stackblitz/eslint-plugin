@@ -12,13 +12,13 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
-          // SHOULD be valid
-        `
+        // SHOULD be valid
+      `
     ),
     fromFixture(
       stripIndent`
-          // \` should be valid
-        `
+        // \` should be valid
+      `
     ),
     fromFixture(
       stripIndent`
@@ -29,24 +29,98 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
-          /**
-           * THIS should start with a capital and end with a dot.
-           */
-        `
+        /**
+         * THIS should start with a capital and end with a dot.
+         */
+      `
     ),
     fromFixture(
       stripIndent`
-            /**
-             * \` should be valid.
-             */
-        `
+        /**
+         * \` should be valid.
+         */
+      `
     ),
+    fromFixture(
+      `
+            /**
+             * Content the replace the file with.
+             */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Run a script from the \`package.json\`. Optionally you can provide \`env\` variables passed
+         * \`\`\`
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * @param {number} port
+         * @param {string} coep
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        new Int32Array(sharedArrayBuffer, 0 /* offset */, 1 /* length */);
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /* Denotes a text frame */
+        TEXT = 0x1
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Foobar
+         * \`export default true\` --► \`const 𝐝𝐞𝐟𝐚𝐮𝐥𝐭 = true\`
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        //#region
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        //#endregion
+      `
+    ),
+    {
+      code: stripIndent`
+          /**
+           * refTableSize:uint32_t (previously used for sanity checks; safe to ignore)
+           */
+        `,
+      options: [
+        {
+          ignoredWords: ['refTableSize'],
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+         // Map<Hostname, IP>
+        `,
+      options: [
+        {
+          ignoredWords: ['Map'],
+        },
+      ],
+    },
   ],
   invalid: [
     {
       code: stripIndent`
-            //should throw
-          `,
+              //should throw
+            `,
       errors: [
         {
           messageId: 'shouldStartWithSpace',
@@ -65,8 +139,8 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-          // Should throw
-        `,
+              // Should throw
+            `,
       errors: [
         {
           messageId: 'lineCommentCapital',
@@ -75,8 +149,8 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-            // should throw for the .
-          `,
+              // should throw for the .
+            `,
       errors: [
         {
           messageId: 'lineCommentEnding',
@@ -85,10 +159,10 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-            /**
-             * should throw for the lack of capital.
-             */
-          `,
+              /**
+               * should throw for the lack of capital.
+               */
+            `,
       errors: [
         {
           messageId: 'blockCommentCapital',
@@ -97,10 +171,10 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-              /**
-               * Should throw for the lack of capital
-               */
-          `,
+                /**
+                 * Should throw for the lack of capital
+                 */
+              `,
       errors: [
         {
           messageId: 'blockCommentEnding',

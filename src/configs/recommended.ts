@@ -159,11 +159,9 @@ export = {
         allowMemberCallExpression: true,
       },
     ],
-
     '@blitz/block-scope-case': 'error',
-
     '@blitz/newline-before-return': 'error',
-
     '@blitz/catch-error-name': 'error',
+    '@blitz/comment-syntax': 'error',
   },
 };
