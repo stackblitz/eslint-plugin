@@ -4,7 +4,7 @@ export const ruleName = 'comment-syntax';
 
 type Options = [
   {
-    lineCommentAllowedCapitalisedWords: string[];
+    ignoredWords: string[];
   }
 ];
 
@@ -85,7 +85,7 @@ export default createRule<Options, MessageIds>({
       {
         type: 'object',
         properties: {
-          lineCommentAllowedCapitalisedWords: {
+          ignoredWords: {
             type: 'array',
             uniqueItems: true,
             description: 'determines which words line comments can start with that have a capital letter',
@@ -104,10 +104,10 @@ export default createRule<Options, MessageIds>({
   },
   defaultOptions: [
     {
-      lineCommentAllowedCapitalisedWords: [],
+      ignoredWords: [],
     },
   ],
-  create: (context, [{ lineCommentAllowedCapitalisedWords }]) => {
+  create: (context, [{ ignoredWords }]) => {
     return {
       Program() {
         const source = context.getSourceCode();
@@ -129,7 +129,7 @@ export default createRule<Options, MessageIds>({
             if (
               isLetter(secondChar) &&
               isCapital(secondChar) &&
-              !isWholeFirstWordCapitalOrAllowed(comment.value.slice(1), lineCommentAllowedCapitalisedWords)
+              !isWholeFirstWordCapitalOrAllowed(comment.value.slice(1), ignoredWords)
             ) {
               context.report({ node: comment, messageId: 'lineCommentCapital' });
             }
@@ -188,10 +188,7 @@ export default createRule<Options, MessageIds>({
 
                 if (
                   isLetter(fourthChar) &&
-                  !(
-                    isCapital(fourthChar) ||
-                    isWholeFirstWordCapitalOrAllowed(actualText, lineCommentAllowedCapitalisedWords)
-                  )
+                  !(isCapital(fourthChar) || isWholeFirstWordCapitalOrAllowed(actualText, ignoredWords))
                 ) {
                   context.report({ node: comment, messageId: 'blockCommentCapital' });
                 }

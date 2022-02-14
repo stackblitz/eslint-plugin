@@ -100,7 +100,7 @@ ruleTester().run(ruleName, rule, {
           `,
       options: [
         {
-          lineCommentAllowedCapitalisedWords: ['refTableSize'],
+          ignoredWords: ['refTableSize'],
         },
       ],
     },
@@ -110,7 +110,7 @@ ruleTester().run(ruleName, rule, {
         `,
       options: [
         {
-          lineCommentAllowedCapitalisedWords: ['Map'],
+          ignoredWords: ['Map'],
         },
       ],
     },
