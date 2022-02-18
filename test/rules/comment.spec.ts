@@ -1,6 +1,6 @@
 import { stripIndent } from 'common-tags';
 import { fromFixture } from 'eslint-etc';
-import rule, { ruleName } from '../../src/rules/comment';
+import rule, { defaultOptions, ruleName } from '../../src/rules/comment';
 import { ruleTester } from '../utils';
 
 ruleTester().run(ruleName, rule, {
@@ -30,6 +30,17 @@ ruleTester().run(ruleName, rule, {
     fromFixture(
       stripIndent`
         /**
+         * Foo:
+         * \`\`\`
+         * abc
+         * \`\`\`
+         * Some text.
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
          * THIS should start with a capital and end with a dot.
          */
       `
@@ -51,7 +62,7 @@ ruleTester().run(ruleName, rule, {
     fromFixture(
       stripIndent`
         /**
-         * Run a script from the \`package.json\`. Optionally you can provide \`env\` variables passed
+         * Run a script from the \`package.json\`. Optionally you can provide \`env\` variables passed:
          * \`\`\`
          */
       `
@@ -61,6 +72,18 @@ ruleTester().run(ruleName, rule, {
         /**
          * @param {number} port
          * @param {string} coep
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * For example:
+         * \`\`\`
+         * foo
+         *
+         * bar
+         * \`\`\`
          */
       `
     ),
@@ -93,6 +116,62 @@ ruleTester().run(ruleName, rule, {
         //#endregion
       `
     ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Some comment.
+         *
+         * @ref foo
+         * @ref bar
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Some comment.
+         *
+         * @ref foo
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Some list:
+         * - a
+         * - b
+         * - c
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Some comment.
+         *
+         * @ref foo
+         *
+         * Some other comment.
+         *
+         * @ref bar
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Some comment.
+         *
+         * @ref foobar
+         * foobar
+         * foobar.
+         *
+         * @ref foobar
+         * foobar.
+         */
+      `
+    ),
     {
       code: stripIndent`
           /**
@@ -101,6 +180,7 @@ ruleTester().run(ruleName, rule, {
         `,
       options: [
         {
+          ...defaultOptions,
           ignoredWords: ['refTableSize'],
         },
       ],
@@ -111,6 +191,7 @@ ruleTester().run(ruleName, rule, {
         `,
       options: [
         {
+          ...defaultOptions,
           ignoredWords: ['Map'],
         },
       ],
@@ -165,7 +246,7 @@ ruleTester().run(ruleName, rule, {
             `,
       errors: [
         {
-          messageId: 'blockCommentCapital',
+          messageId: 'paragraphCapitalized',
         },
       ],
     },
@@ -177,7 +258,7 @@ ruleTester().run(ruleName, rule, {
               `,
       errors: [
         {
-          messageId: 'blockCommentEnding',
+          messageId: 'shouldEndWithDot',
         },
       ],
     },
@@ -200,7 +281,86 @@ ruleTester().run(ruleName, rule, {
             `,
       errors: [
         {
-          messageId: 'shouldStartWithBlock',
+          messageId: 'invalidBlockCommentLine',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Some Headline
+         * \`\`\`
+         * abc
+         * \`\`\`
+         * lowercase.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidParagraphEnding',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Some Headline:
+         * \`\`\`
+         * abc
+         * \`\`\`
+         * lowercase.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'paragraphCapitalized',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Some comment.
+         *
+         * @todo some jsdoc
+         * on multiple lines.
+         * @todo another todo
+         */
+      `,
+      errors: [
+        {
+          messageId: 'spaceBeforeJSDoc',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Some comment.
+         *
+         * @todo a
+         *
+         * Some other comment.
+         * @ref b
+         */
+      `,
+      errors: [
+        {
+          messageId: 'spaceBeforeJSDoc',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Some list:
+         * - a
+         * -b
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidListItem',
         },
       ],
     },
