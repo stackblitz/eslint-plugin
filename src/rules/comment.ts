@@ -1,34 +1,53 @@
 import { createRule } from '../util';
+import { oneLine } from '../util/messages';
 
 export const ruleName = 'comment-syntax';
 
-type Options = [
-  {
-    ignoredWords: string[];
-  }
-];
+export const defaultOptions = {
+  ignoredWords: [] as string[],
+  allowedParagraphEndings: ['.', ':', '`', ')', '}', ']', ';'],
+};
+
+type Options = [(typeof defaultOptions | undefined)?];
 
 const SPACE_CHARCODE = 32;
-const NEWLINE_CHARCODE = 10;
-const STAR_CHARCODE = 42;
+const STAR = '*';
+const BLOCK_COMMENT_END = /^\s*$/;
+const EMPTY_BLOCK_COMMENT_LINE = /^\s*\*$/;
+const CODE_BLOCK = /^\s*\*\s+```/;
+const BLOCK_COMMENT_LINE_START = /^\s*\*\s+.*/;
+const JS_DOC_REGEX = /^\s*\*\s*@.+?/;
+const LIST_ITEM = /^\s*\*\s*-/;
+
+const LINE_INFO = '\n\nLine: {{line}}';
 
 type MessageIds =
   | 'lineCommentCapital'
   | 'lineCommentEnding'
-  | 'blockCommentCapital'
-  | 'blockCommentEnding'
+  | 'paragraphCapitalized'
   | 'shouldStartWithSpace'
-  | 'shouldStartWithBlock';
+  | 'shouldStartWithBlock'
+  | 'shouldEndWithBlock'
+  | 'noSpaceBeforeEnd'
+  | 'spaceBeforeJSDoc'
+  | 'shouldEndWithDot'
+  | 'invalidListItem'
+  | 'invalidBlockCommentLine'
+  | 'invalidParagraphEnding';
 
-const isCapital = (char: string) => {
-  return char === char.toUpperCase();
-};
+function isCapital(char: string) {
+  return char != null && char === char.toUpperCase();
+}
 
-const isWholeFirstWordCapitalOrAllowed = (sentence: string, allowedWords: string[]) => {
+function isLetter(char: string) {
+  return /\w/.test(char);
+}
+
+function isCapitalizedOrAllowed(text: string, ignoredWords: string[]) {
   let firstWord = '';
   let isWordCapital = true;
 
-  for (const char of sentence) {
+  for (const char of text) {
     if (char?.charCodeAt(0) === SPACE_CHARCODE || !isLetter(char)) {
       break;
     }
@@ -46,25 +65,12 @@ const isWholeFirstWordCapitalOrAllowed = (sentence: string, allowedWords: string
     return true;
   }
 
-  if (allowedWords.includes(firstWord)) {
+  if (ignoredWords.includes(firstWord)) {
     return true;
   }
 
   return false;
-};
-
-const isLetter = (char: string) => {
-  return char && char.toLowerCase() !== char.toUpperCase();
-};
-
-const isJsDoc = (comment: string) => {
-  return (
-    comment.includes('@param') ||
-    comment.includes('@return') ||
-    comment.includes('@deprecated') ||
-    comment.includes('@see')
-  );
-};
+}
 
 const isRegion = (comment: string) => {
   return comment.startsWith('#region') || comment.startsWith('#endregion');
@@ -76,8 +82,9 @@ export default createRule<Options, MessageIds>({
     type: 'layout',
     docs: {
       category: 'Best Practices',
-      description: `Enforce block comments to have capital first letter and end with dots and 
-      line comments no capital first letter and no dot`,
+      description: oneLine`Enforce block comments to start with a capital first letter and end with a dot and
+        line comments to not start with a capital first letter and no dot
+      `,
       recommended: 'error',
     },
     fixable: 'code',
@@ -88,28 +95,40 @@ export default createRule<Options, MessageIds>({
           ignoredWords: {
             type: 'array',
             uniqueItems: true,
-            description: 'determines which words line comments can start with that have a capital letter',
+            description: 'Determines which words do not have to be capitalized',
+            default: defaultOptions.ignoredWords,
+          },
+          allowedParagraphEndings: {
+            type: 'array',
+            uniqueItems: true,
+            description: 'Specifies the characters that can be used to end a paragraph',
+            default: defaultOptions.allowedParagraphEndings,
           },
         },
+        additionalProperties: false,
       },
     ],
     messages: {
-      shouldStartWithSpace: 'A line comment should start with a space',
-      shouldStartWithBlock: 'A block comment should start with /**\n *',
-      lineCommentCapital: 'A line comment cannot start with a capital letter unless the entire word is capitalised',
-      lineCommentEnding: 'A line comment cannot end with a dot',
-      blockCommentCapital: 'A block comment has to start with a capital letter',
-      blockCommentEnding: 'A block comment has to end with a dot',
+      shouldStartWithSpace: 'Line comment should start with a space.',
+      shouldStartWithBlock: 'Block comment should start with `/**\\n *`.',
+      lineCommentCapital: 'Line comment cannot start with a capital letter unless the entire word is capitalized.',
+      lineCommentEnding: 'Line comment cannot end with a dot.',
+      paragraphCapitalized: `Paragraph should start with a capital letter.${LINE_INFO}`,
+      shouldEndWithDot: `Paragraph should end with a dot.${LINE_INFO}`,
+      shouldEndWithBlock: 'Block comment should end with `\\n*/`.',
+      noSpaceBeforeEnd: 'Block comment should not end with an empty line.',
+      invalidListItem: `List item requires a space at the beginning.${LINE_INFO}`,
+      invalidParagraphEnding: `Paragraph should end with one of {{allowedParagraphEndings}}.${LINE_INFO}`,
+      invalidBlockCommentLine: `Each line in a block comment requires a space after '*'.${LINE_INFO}`,
+      spaceBeforeJSDoc: `Requires newline before JSDocs.${LINE_INFO}`,
     },
   },
-  defaultOptions: [
-    {
-      ignoredWords: [],
-    },
-  ],
-  create: (context, [{ ignoredWords }]) => {
+  defaultOptions: [defaultOptions],
+  create: (context, [options]) => {
     return {
       Program() {
+        const { ignoredWords, allowedParagraphEndings } = { ...defaultOptions, ...options };
+
         const source = context.getSourceCode();
 
         const comments = source.getAllComments();
@@ -129,7 +148,7 @@ export default createRule<Options, MessageIds>({
             if (
               isLetter(secondChar) &&
               isCapital(secondChar) &&
-              !isWholeFirstWordCapitalOrAllowed(comment.value.slice(1), ignoredWords)
+              !isCapitalizedOrAllowed(comment.value.slice(1), ignoredWords)
             ) {
               context.report({ node: comment, messageId: 'lineCommentCapital' });
             }
@@ -142,77 +161,127 @@ export default createRule<Options, MessageIds>({
           }
 
           if (comment.type === 'Block') {
-            if (!comment.value.includes('\n')) {
+            let lines = comment.value.split('\n');
+
+            if (lines.length <= 1) {
               // single line block comments are ignored
               continue;
             }
 
-            const [firstChar] = comment.value;
-            let numberOfSpaces = 0;
-
             // verify the first char is a '*'
-            if (firstChar.charCodeAt(0) !== STAR_CHARCODE) {
+            if (lines[0] !== STAR) {
               context.report({ node: comment, messageId: 'shouldStartWithBlock' });
-
               continue;
             }
 
-            const commentWithoutFirstStar = comment.value.slice(1);
+            lines = lines.slice(1);
 
-            for (const char of commentWithoutFirstStar) {
-              if (char.charCodeAt(0) === STAR_CHARCODE) {
-                // should be the newline
-                const firstChar = commentWithoutFirstStar[0];
+            let newParagraph = true;
+            let insideCodeBlock = false;
+            let jsdocContinuation = false;
 
-                // should be the star
-                const secondChar = commentWithoutFirstStar[numberOfSpaces + 1];
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              const lineData = { line: line.trim() };
+              const prevLine = lines[i - 1];
+              const nextLine = lines[i + 1];
+              const isLastContentLine = BLOCK_COMMENT_END.test(nextLine);
+              const isLastLine = i === lines.length - 1;
+              const isCurrentLineEmpty = EMPTY_BLOCK_COMMENT_LINE.test(line);
+              const isNextLineEmpty = EMPTY_BLOCK_COMMENT_LINE.test(nextLine);
+              const isCurrentLineJSDoc = JS_DOC_REGEX.test(line);
+              const isNextLineCodeBlock = CODE_BLOCK.test(nextLine);
+              const isListItem = LIST_ITEM.test(line);
+              const isNotEmptyOrEnd = !EMPTY_BLOCK_COMMENT_LINE.test(nextLine) && !BLOCK_COMMENT_END.test(nextLine);
 
-                // should be a space
-                const thirdChar = commentWithoutFirstStar[numberOfSpaces + 2];
-
-                // First actual character
-                const fourthChar = commentWithoutFirstStar[numberOfSpaces + 3];
-
-                if (
-                  firstChar?.charCodeAt(0) !== NEWLINE_CHARCODE ||
-                  secondChar?.charCodeAt(0) !== STAR_CHARCODE ||
-                  thirdChar?.charCodeAt(0) !== SPACE_CHARCODE
-                ) {
-                  context.report({ node: comment, messageId: 'shouldStartWithBlock' });
-
-                  // if this one fails, the others are interpreted incorrectly
+              if (isLastLine) {
+                if (!BLOCK_COMMENT_END.test(line)) {
+                  context.report({ node: comment, messageId: 'shouldEndWithBlock' });
                   break;
                 }
 
-                const actualText = commentWithoutFirstStar.slice(numberOfSpaces + 3);
-
-                if (
-                  isLetter(fourthChar) &&
-                  !(isCapital(fourthChar) || isWholeFirstWordCapitalOrAllowed(actualText, ignoredWords))
-                ) {
-                  context.report({ node: comment, messageId: 'blockCommentCapital' });
+                if (EMPTY_BLOCK_COMMENT_LINE.test(prevLine)) {
+                  context.report({ node: comment, messageId: 'noSpaceBeforeEnd' });
+                  break;
                 }
 
+                continue;
+              }
+
+              if (CODE_BLOCK.test(line)) {
+                if (insideCodeBlock) {
+                  insideCodeBlock = false;
+                  newParagraph = true;
+
+                  continue;
+                }
+
+                insideCodeBlock = true;
+
+                continue;
+              }
+
+              if (isCurrentLineJSDoc) {
+                if (prevLine && !EMPTY_BLOCK_COMMENT_LINE.test(prevLine) && !JS_DOC_REGEX.test(prevLine)) {
+                  context.report({ node: comment, messageId: 'spaceBeforeJSDoc', data: { ...lineData } });
+                  break;
+                }
+
+                jsdocContinuation = isNotEmptyOrEnd && !JS_DOC_REGEX.test(nextLine);
+              }
+
+              if (insideCodeBlock || isCurrentLineEmpty || isCurrentLineJSDoc) {
+                continue;
+              }
+
+              if (!isCurrentLineEmpty && !BLOCK_COMMENT_LINE_START.test(line)) {
+                context.report({ node: comment, messageId: 'invalidBlockCommentLine', data: { ...lineData } });
                 break;
               }
 
-              if (![SPACE_CHARCODE, NEWLINE_CHARCODE].includes(char.charCodeAt(0))) {
-                context.report({ node: comment, messageId: 'shouldStartWithBlock' });
+              if (isListItem) {
+                const listItemText = line.replace(LIST_ITEM, '');
 
-                break;
-              } else if (char.charCodeAt(0) === SPACE_CHARCODE) {
-                numberOfSpaces++;
+                if (listItemText[0] !== ' ') {
+                  context.report({ node: comment, messageId: 'invalidListItem', data: { ...lineData } });
+                  break;
+                }
+
+                continue;
+              }
+
+              if (newParagraph && !jsdocContinuation) {
+                const text = line.replace(/^\s*\*\s*/, '');
+                const firstChar = text[0];
+
+                if (isLetter(firstChar) && !(isCapital(firstChar) || isCapitalizedOrAllowed(text, ignoredWords))) {
+                  context.report({ node: comment, messageId: 'paragraphCapitalized', data: { ...lineData } });
+                  break;
+                }
+              }
+
+              jsdocContinuation = jsdocContinuation && isNotEmptyOrEnd;
+              newParagraph = isNextLineEmpty && !isLastContentLine;
+
+              if (isNextLineEmpty || isLastContentLine || isNextLineCodeBlock) {
+                const lastChar = line[line.length - 1];
+
+                if (isLastContentLine && !allowedParagraphEndings.some((ending) => ending === lastChar)) {
+                  context.report({ node: comment, messageId: 'shouldEndWithDot', data: { ...lineData } });
+                  break;
+                }
+
+                if (!isLastContentLine && !allowedParagraphEndings.some((ending) => ending === lastChar)) {
+                  context.report({
+                    node: comment,
+                    messageId: 'invalidParagraphEnding',
+                    data: { ...lineData, allowedParagraphEndings: `[${allowedParagraphEndings.join(' ')}]` },
+                  });
+
+                  break;
+                }
               }
             }
-
-            const secondLastChar = comment.value[comment.value.length - 4];
-            const lastChar = comment.value[comment.value.length - 3];
-
-            if (!isJsDoc(comment.value) && isLetter(secondLastChar) && isLetter(lastChar) && lastChar !== '.') {
-              context.report({ node: comment, messageId: 'blockCommentEnding' });
-            }
-
-            continue;
           }
         }
       },
