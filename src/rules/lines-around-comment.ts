@@ -1,8 +1,12 @@
-import { AST_NODE_TYPES, TSESLint, TSESTree } from '@typescript-eslint/utils';
-import baseRule from 'eslint/lib/rules/lines-around-comment';
+import { AST_NODE_TYPES, ESLintUtils, TSESLint, TSESTree } from '@typescript-eslint/utils';
 import { createRule, InferMessageIdsTypeFromRule, InferOptionsTypeFromRule } from '../util';
 
 export const ruleName = 'lines-around-comment';
+
+const baseRule = ESLintUtils.nullThrows(
+  require('eslint/use-at-your-own-risk').builtinRules.get(ruleName),
+  ''
+) as typeof import('eslint/lib/rules/lines-around-comment');
 
 export type BaseOptions = InferOptionsTypeFromRule<typeof baseRule>;
 export type MessageIds = InferMessageIdsTypeFromRule<typeof baseRule>;

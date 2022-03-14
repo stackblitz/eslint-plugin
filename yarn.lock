@@ -2372,6 +2372,11 @@ jest-mock@^27.5.1:
     "@jest/types" "^27.5.1"
     "@types/node" "*"
 
+jest-node-exports-resolver@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/jest-node-exports-resolver/-/jest-node-exports-resolver-1.1.5.tgz#8c0c7204b9eb9dabc09617449e27b933c39cdcfa"
+  integrity sha512-dWar/x+J8ATndZiWYHF1Lswv/CQ8eQBS5RhHlIGqf+cP54oAvJc9+1bESWs3Vd9Kd76U0qtKdDd20fHldfIxfg==
+
 jest-pnp-resolver@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/jest-pnp-resolver/-/jest-pnp-resolver-1.2.2.tgz#b704ac0ae028a89108a4d040b3f919dfddc8e33c"
