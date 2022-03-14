@@ -192,7 +192,7 @@ export default createRule<Options, MessageIds>({
               const isCurrentLineJSDoc = JS_DOC_REGEX.test(line);
               const isNextLineCodeBlock = CODE_BLOCK.test(nextLine);
               const isListItem = LIST_ITEM.test(line);
-              const isNotEmptyOrEnd = !EMPTY_BLOCK_COMMENT_LINE.test(nextLine) && !BLOCK_COMMENT_END.test(nextLine);
+              const nextLineNotEmptyOrEnd = !isNextLineEmpty && !isLastContentLine;
 
               if (isLastLine) {
                 if (!BLOCK_COMMENT_END.test(line)) {
@@ -227,7 +227,7 @@ export default createRule<Options, MessageIds>({
                   break;
                 }
 
-                jsdocContinuation = isNotEmptyOrEnd && !JS_DOC_REGEX.test(nextLine);
+                jsdocContinuation = nextLineNotEmptyOrEnd && !JS_DOC_REGEX.test(nextLine);
               }
 
               if (insideCodeBlock || isCurrentLineEmpty || isCurrentLineJSDoc) {
@@ -260,7 +260,7 @@ export default createRule<Options, MessageIds>({
                 }
               }
 
-              jsdocContinuation = jsdocContinuation && isNotEmptyOrEnd;
+              jsdocContinuation = jsdocContinuation && nextLineNotEmptyOrEnd;
               newParagraph = isNextLineEmpty && !isLastContentLine;
 
               if (isNextLineEmpty || isLastContentLine || isNextLineCodeBlock) {
