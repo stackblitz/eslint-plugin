@@ -13,7 +13,7 @@
     "strict": true,
     "target": "es2017",
     "lib": ["es2017"],
-    "module": "commonjs",
+    "module": "CommonJS",
     "esModuleInterop": true,
     "declaration": false,
     "declarationMap": false,
