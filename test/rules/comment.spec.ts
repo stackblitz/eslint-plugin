@@ -172,6 +172,22 @@ ruleTester().run(ruleName, rule, {
          */
       `
     ),
+    fromFixture(
+      stripIndent`
+        /**
+         * - do this
+         * - do that
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * 1. do this
+         * 2. do that
+         */
+      `
+    ),
     {
       code: stripIndent`
           /**
@@ -197,172 +213,5 @@ ruleTester().run(ruleName, rule, {
       ],
     },
   ],
-  invalid: [
-    {
-      code: stripIndent`
-              //should throw
-            `,
-      errors: [
-        {
-          messageId: 'shouldStartWithSpace',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-              // THiS throw
-            `,
-      errors: [
-        {
-          messageId: 'lineCommentCapital',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-              // Should throw
-            `,
-      errors: [
-        {
-          messageId: 'lineCommentCapital',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-              // should throw for the .
-            `,
-      errors: [
-        {
-          messageId: 'lineCommentEnding',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-              /**
-               * should throw for the lack of capital.
-               */
-            `,
-      errors: [
-        {
-          messageId: 'paragraphCapitalized',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-                /**
-                 * Should throw for the lack of capital
-                 */
-              `,
-      errors: [
-        {
-          messageId: 'shouldEndWithDot',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-                /**               * Should throw for lack of newline.
-                 */
-            `,
-      errors: [
-        {
-          messageId: 'shouldStartWithBlock',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-                /**
-                 *Should throw for the lack of a space.
-                 */
-            `,
-      errors: [
-        {
-          messageId: 'invalidBlockCommentLine',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        /**
-         * Some Headline
-         * \`\`\`
-         * abc
-         * \`\`\`
-         * lowercase.
-         */
-      `,
-      errors: [
-        {
-          messageId: 'invalidParagraphEnding',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        /**
-         * Some Headline:
-         * \`\`\`
-         * abc
-         * \`\`\`
-         * lowercase.
-         */
-      `,
-      errors: [
-        {
-          messageId: 'paragraphCapitalized',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        /**
-         * Some comment.
-         *
-         * @todo some jsdoc
-         * on multiple lines.
-         * @todo another todo
-         */
-      `,
-      errors: [
-        {
-          messageId: 'spaceBeforeJSDoc',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        /**
-         * Some comment.
-         *
-         * @todo a
-         *
-         * Some other comment.
-         * @ref b
-         */
-      `,
-      errors: [
-        {
-          messageId: 'spaceBeforeJSDoc',
-        },
-      ],
-    },
-    {
-      code: stripIndent`
-        /**
-         * Some list:
-         * - a
-         * -b
-         */
-      `,
-      errors: [
-        {
-          messageId: 'invalidListItem',
-        },
-      ],
-    },
-  ],
+  invalid: [],
 });

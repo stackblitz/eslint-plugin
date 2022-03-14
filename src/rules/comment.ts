@@ -17,7 +17,7 @@ const EMPTY_BLOCK_COMMENT_LINE = /^\s*\*$/;
 const CODE_BLOCK = /^\s*\*\s+```/;
 const BLOCK_COMMENT_LINE_START = /^\s*\*\s+.*/;
 const JS_DOC_REGEX = /^\s*\*\s*@.+?/;
-const LIST_ITEM = /^\s*\*\s*-/;
+const LIST_ITEM = /^\s*\*\s*(?:-|\d\.)/;
 
 const LINE_INFO = '\n\nLine: {{line}}';
 
