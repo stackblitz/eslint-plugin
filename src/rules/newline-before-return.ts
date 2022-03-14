@@ -1,4 +1,4 @@
-import { TSESTree } from '@typescript-eslint/experimental-utils';
+import { TSESTree } from '@typescript-eslint/utils';
 import { oneLine } from 'common-tags';
 import { createRule } from '../util';
 
@@ -19,13 +19,13 @@ export default createRule<Options, MessageIds>({
   meta: {
     type: 'layout',
     docs: {
-      category: 'Stylistic Issues',
       description: oneLine`
         Require an empty line before 'return' statements, only for block statemenet with more than 2 nodes
       `,
       recommended: 'error',
     },
     fixable: 'whitespace',
+    hasSuggestions: true,
     schema: [
       {
         type: 'object',
@@ -53,6 +53,7 @@ export default createRule<Options, MessageIds>({
 
     function calcCommentLines(node: TSESTree.Node, lineNumTokenBefore: number) {
       const comments = sourceCode.getCommentsBefore(node);
+
       let numLinesComments = 0;
 
       if (!comments.length) {
@@ -89,6 +90,7 @@ export default createRule<Options, MessageIds>({
 
     function getLineNumberOfTokenBefore(node: TSESTree.Node) {
       const tokenBefore = sourceCode.getTokenBefore(node);
+
       let lineNumTokenBefore;
 
       /**

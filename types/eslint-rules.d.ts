@@ -1,5 +1,5 @@
 declare module 'eslint/lib/rules/lines-around-comment' {
-  import { TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+  import { TSESLint, TSESTree } from '@typescript-eslint/utils';
 
   const rule: TSESLint.RuleModule<
     'after' | 'before',
