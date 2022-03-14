@@ -81,7 +81,6 @@ export default createRule<Options, MessageIds>({
   meta: {
     type: 'layout',
     docs: {
-      category: 'Best Practices',
       description: oneLine`Enforce block comments to start with a capital first letter and end with a dot and
         line comments to not start with a capital first letter and no dot
       `,

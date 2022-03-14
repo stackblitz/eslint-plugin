@@ -1,9 +1,8 @@
-import { RuleTester } from '@typescript-eslint/experimental-utils/dist/ts-eslint';
-import { resolve } from 'path';
+import { ESLintUtils } from '@typescript-eslint/utils';
 
 export function ruleTester() {
-  return new RuleTester({
-    parser: resolve('./node_modules/@typescript-eslint/parser'),
+  return new ESLintUtils.RuleTester({
+    parser: '@typescript-eslint/parser',
     parserOptions: {
       ecmaVersion: 6,
       sourceType: 'module',

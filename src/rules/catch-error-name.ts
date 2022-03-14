@@ -25,7 +25,6 @@ export default createRule<Options, MessageIds>({
   meta: {
     type: 'suggestion',
     docs: {
-      category: 'Best Practices',
       description: 'Enforce a specific parameter name in catch clauses',
       recommended: 'error',
     },

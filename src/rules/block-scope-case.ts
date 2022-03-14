@@ -9,7 +9,6 @@ export default createRule({
   meta: {
     type: 'layout',
     docs: {
-      category: 'Best Practices',
       description: 'Ensures all case statements are block scoped',
       recommended: 'error',
     },

@@ -1,4 +1,4 @@
-import { AST_NODE_TYPES, TSESLint, TSESTree } from '@typescript-eslint/experimental-utils';
+import { AST_NODE_TYPES, TSESLint, TSESTree } from '@typescript-eslint/utils';
 import baseRule from 'eslint/lib/rules/lines-around-comment';
 import { createRule, InferMessageIdsTypeFromRule, InferOptionsTypeFromRule } from '../util';
 
@@ -39,7 +39,6 @@ export default createRule<Options, MessageIds>({
     type: 'layout',
     docs: {
       description: 'Require empty lines around comments',
-      category: 'Stylistic Issues',
       recommended: false,
       extendsBaseRule: true,
       requiresTypeChecking: true,
