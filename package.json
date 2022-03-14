@@ -28,7 +28,7 @@
     "@typescript-eslint/experimental-utils": "^4.20.0",
     "@typescript-eslint/parser": "^5.14.0",
     "common-tags": "^1.8.0",
-    "eslint": "^7.23.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0"
   },
