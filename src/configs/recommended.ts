@@ -39,6 +39,13 @@ export = {
 
     'prefer-arrow-callback': 'error',
 
+    'no-constant-condition': [
+      "error",
+      {
+        checkLoops: false,
+      }
+    ],
+
     'padding-line-between-statements': [
       'error',
       {
