@@ -42,7 +42,7 @@ export = {
     'no-constant-condition': [
       "error",
       {
-        checkLoops: false
+        checkLoops: false,
       }
     ],
 
