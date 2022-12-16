@@ -17,6 +17,8 @@ export = {
   rules: {
     'consistent-return': 'error',
 
+    'multiline-comment-style': ['error', 'starred-block'],
+
     curly: ['error', 'all'],
 
     'dot-notation': 'error',
@@ -40,10 +42,10 @@ export = {
     'prefer-arrow-callback': 'error',
 
     'no-constant-condition': [
-      "error",
+      'error',
       {
         checkLoops: false,
-      }
+      },
     ],
 
     'padding-line-between-statements': [
