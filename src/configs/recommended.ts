@@ -12,6 +12,7 @@ export = {
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    'plugin:jsonc/recommended-with-jsonc',
   ],
   plugins: ['@blitz'],
   rules: {
