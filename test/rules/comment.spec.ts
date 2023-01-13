@@ -1,7 +1,7 @@
 import { stripIndent } from 'common-tags';
 import { fromFixture } from 'eslint-etc';
-import rule, { defaultOptions, ruleName } from '../../src/rules/comment';
-import { ruleTester } from '../utils';
+import rule, { defaultOptions, ruleName } from '../../src/rules/comment-syntax';
+import { ruleTester, ruleTesterForJSONC } from '../utils';
 
 ruleTester().run(ruleName, rule, {
   valid: [
@@ -214,4 +214,38 @@ ruleTester().run(ruleName, rule, {
     },
   ],
   invalid: [],
+});
+
+
+ruleTesterForJSONC().run(ruleName, rule, {
+  valid: [
+    stripIndent`
+      {
+        // optional property
+        "foo": "bar"
+      }
+    `,
+    stripIndent`
+      {
+        /**
+         * Non ut consequatur sint. Est animi excepturi porro molestiae ut in corrupti.
+         */
+        "lorem": true
+      }
+    `
+  ],
+  invalid: [
+    {
+      code: stripIndent`
+      {
+        // Oopsie I've been a baaad boy.
+        "despicable": 3
+      }
+      `,
+      errors: [
+        'Line comment cannot start with a capital letter unless the entire word is capitalized.',
+        'Line comment cannot end with a dot.'
+      ],
+    },
+  ],
 });

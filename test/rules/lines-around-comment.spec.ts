@@ -1,6 +1,6 @@
 import { stripIndent } from 'common-tags';
 import rule, { ruleName, defaultOptions } from '../../src/rules/lines-around-comment';
-import { ruleTester } from '../utils';
+import { ruleTester, ruleTesterForJSONC } from '../utils';
 
 ruleTester().run(ruleName, rule, {
   valid: [
@@ -193,4 +193,72 @@ ruleTester().run(ruleName, rule, {
     },
   ],
   invalid: [],
+});
+
+ruleTesterForJSONC().run(ruleName, rule, {
+  valid: [
+    {
+      code: stripIndent`
+        {
+          "version": 0,
+
+          // optional property
+          "foo": "bar"
+        }
+      `,
+      options: [
+        {
+          beforeLineComment: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        {
+          "ipsum": "wut",
+
+          /**
+           * Non ut consequatur sint. Est animi excepturi porro molestiae ut in corrupti.
+           */
+          "lorem": true
+        }
+      `,
+      options: [
+        {
+          beforeLineComment: true,
+        },
+      ],
+    }
+  ],
+  invalid: [
+    {
+      code: stripIndent`
+        {
+          "a": {
+            "b": "c"
+          },
+          // oh nooo
+          "b": 0
+        }
+      `,
+      output: stripIndent`
+        {
+          "a": {
+            "b": "c"
+          },
+
+          // oh nooo
+          "b": 0
+        }
+      `,
+      options: [
+        {
+          beforeLineComment: true,
+        },
+      ],
+      errors: [
+        'Expected line before comment.'
+      ],
+    },
+  ],
 });

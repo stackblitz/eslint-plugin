@@ -1,6 +1,6 @@
 {
   "name": "@blitz/eslint-plugin",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "An ESLint config to enforce a consistent code styles across StackBlitz projects",
   "keywords": [
     "eslint",
@@ -30,6 +30,7 @@
     "common-tags": "^1.8.0",
     "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsonc": "^2.6.0",
     "eslint-plugin-prettier": "^4.0.0"
   },
   "devDependencies": {
