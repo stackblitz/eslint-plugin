@@ -30,6 +30,20 @@ ruleTester().run(ruleName, rule, {
     fromFixture(
       stripIndent`
         /**
+         * Parahraphs can end on an exclamation mark!
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Parahraphs can end on a question mark?
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
          * Foo:
          * \`\`\`
          * abc
@@ -216,7 +230,6 @@ ruleTester().run(ruleName, rule, {
   invalid: [],
 });
 
-
 ruleTesterForJSONC().run(ruleName, rule, {
   valid: [
     stripIndent`
@@ -232,7 +245,7 @@ ruleTesterForJSONC().run(ruleName, rule, {
          */
         "lorem": true
       }
-    `
+    `,
   ],
   invalid: [
     {
@@ -244,7 +257,7 @@ ruleTesterForJSONC().run(ruleName, rule, {
       `,
       errors: [
         'Line comment cannot start with a capital letter unless the entire word is capitalized.',
-        'Line comment cannot end with a dot.'
+        'Line comment cannot end with a dot.',
       ],
     },
   ],

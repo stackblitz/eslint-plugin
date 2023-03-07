@@ -5,7 +5,7 @@ export const ruleName = 'comment-syntax';
 
 export const defaultOptions = {
   ignoredWords: [] as string[],
-  allowedParagraphEndings: ['.', ':', '`', ')', '}', ']', ';'],
+  allowedParagraphEndings: ['.', ':', '`', ')', '}', ']', ';', '!', '?'],
 };
 
 type Options = [(typeof defaultOptions | undefined)?];
