@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "5.59.7",
-    "@typescript-eslint/parser": "^5.14.0",
+    "@typescript-eslint/parser": "^5.59.7",
     "@typescript-eslint/utils": "^5.59.6",
     "common-tags": "^1.8.2",
     "eslint": "^8.11.0",
