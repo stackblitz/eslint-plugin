@@ -3,7 +3,7 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
-  resolver: 'jest-node-exports-resolver',
+  transformIgnorePatterns: ['^.+\\.js$'],
   testMatch: ['<rootDir>/**/?*.+(spec|test).+(ts)'],
   collectCoverage: false,
   collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
