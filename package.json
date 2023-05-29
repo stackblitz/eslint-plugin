@@ -38,7 +38,7 @@
     "@types/common-tags": "^1.8.1",
     "@types/eslint": "^8.4.1",
     "@types/jest": "^26.0.10",
-    "@types/node": "^20.2.4",
+    "@types/node": "^20.2.5",
     "eslint-etc": "^5.2.1",
     "jest": "^27.5.1",
     "jest-node-exports-resolver": "^1.1.6",
