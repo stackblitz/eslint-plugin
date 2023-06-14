@@ -57,6 +57,11 @@ export = {
         next: ['block', 'block-like', 'class', 'const', 'let'],
       },
       {
+        blankLine: 'always',
+        prev: 'block',
+        next: '*',
+      },
+      {
         blankLine: 'never',
         prev: ['block', 'block-like'],
         next: ['case', 'default'],
