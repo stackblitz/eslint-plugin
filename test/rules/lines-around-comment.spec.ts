@@ -228,7 +228,7 @@ ruleTesterForJSONC().run(ruleName, rule, {
           beforeLineComment: true,
         },
       ],
-    }
+    },
   ],
   invalid: [
     {
@@ -256,9 +256,7 @@ ruleTesterForJSONC().run(ruleName, rule, {
           beforeLineComment: true,
         },
       ],
-      errors: [
-        'Expected line before comment.'
-      ],
+      errors: ['Expected line before comment.'],
     },
   ],
 });

@@ -57,6 +57,11 @@ export = {
         next: ['block', 'block-like', 'class', 'const', 'let'],
       },
       {
+        blankLine: 'always',
+        prev: 'block',
+        next: '*',
+      },
+      {
         blankLine: 'never',
         prev: ['block', 'block-like'],
         next: ['case', 'default'],
@@ -81,7 +86,11 @@ export = {
         prev: 'case',
         next: 'default',
       },
-      { blankLine: 'any', prev: '*', next: 'break' },
+      {
+        blankLine: 'any',
+        prev: '*',
+        next: 'break',
+      },
     ],
 
     '@typescript-eslint/no-unused-vars': [
