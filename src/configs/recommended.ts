@@ -86,7 +86,11 @@ export = {
         prev: 'case',
         next: 'default',
       },
-      { blankLine: 'any', prev: '*', next: 'break' },
+      {
+        blankLine: 'any',
+        prev: '*',
+        next: 'break',
+      },
     ],
 
     '@typescript-eslint/no-unused-vars': [
