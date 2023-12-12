@@ -202,12 +202,143 @@ ruleTester().run(ruleName, rule, {
          */
       `
     ),
+    fromFixture(
+      stripIndent`
+        /**
+         * 1. foo
+         *    bar
+         * 2. baz
+         *    unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * 1. foo
+         *    bar
+         *
+         * 2. baz
+         *    unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * 1. foo
+         *    bar
+         *    baz
+         *
+         * 2. Lorem ipsum dolor sit amet, consetetur
+         *    sadipscing elitr, sed diam nonumy eirmod
+         *    tempor.
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * 1. foo
+         *    bar
+         * Some paragraph in the middle.
+         * 2. baz
+         *    unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * 1. foo
+         *    bar
+         * 2. baz
+         *    unicorn
+         * Some paragraph at the end.
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         *     1. foo
+         *        bar
+         *   2. baz
+         *      unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * - foo
+         *   bar
+         * - baz
+         *   unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * - foo
+         *   bar
+         *
+         * - Lorem ipsum dolor sit amet, consetetur
+         *   sadipscing elitr, sed diam nonumy eirmod
+         *   tempor.
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * - foo
+         *   bar
+         * Some paragraph in the middle.
+         * - baz
+         *   unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * - foo
+         *   bar
+         * - baz
+         *   unicorn
+         * Some paragraph at the end.
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         *   - foo
+         *     bar
+         *
+         *     - baz
+         *       unicorn
+         */
+      `
+    ),
+    fromFixture(
+      stripIndent`
+        /**
+         * Some diagram:
+         * \`\`\`
+         * @ some text here
+         * \`\`\`
+         */
+      `
+    ),
     {
       code: stripIndent`
-          /**
-           * refTableSize:uint32_t (previously used for sanity checks; safe to ignore)
-           */
-        `,
+        /**
+         * refTableSize:uint32_t (previously used for sanity checks; safe to ignore)
+         */
+      `,
       options: [
         {
           ...defaultOptions,
@@ -217,8 +348,8 @@ ruleTester().run(ruleName, rule, {
     },
     {
       code: stripIndent`
-         // Map<Hostname, IP>
-        `,
+        // Map<Hostname, IP>
+      `,
       options: [
         {
           ...defaultOptions,
@@ -227,7 +358,58 @@ ruleTester().run(ruleName, rule, {
       ],
     },
   ],
-  invalid: [],
+  invalid: [
+    {
+      code: stripIndent`
+        /**
+         * -foo
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidListItem',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * 1.foo
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidListItem',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * - foo
+         *    misaligned
+         */
+      `,
+      errors: [
+        {
+          messageId: 'paragraphCapitalized',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * 1. foo
+         *     misaligned
+         */
+      `,
+      errors: [
+        {
+          messageId: 'paragraphCapitalized',
+        },
+      ],
+    },
+  ],
 });
 
 ruleTesterForJSONC().run(ruleName, rule, {
