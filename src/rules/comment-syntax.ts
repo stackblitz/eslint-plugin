@@ -18,6 +18,7 @@ const CODE_BLOCK = /^\s*\*\s+```/;
 const BLOCK_COMMENT_LINE_START = /^\s*\*\s+.*/;
 const JS_DOC_REGEX = /^\s*\*\s*@.+?/;
 const LIST_ITEM = /^\s*\*\s*(?:-|\d\.)/;
+const LIST_ITEM_INDENTATION = /^\s*\*(\s*(?:-|\d[.:)])\s*)/;
 
 const LINE_INFO = '\n\nLine: {{line}}';
 
@@ -179,6 +180,8 @@ export default createRule<Options, MessageIds>({
             let insideCodeBlock = false;
             let jsdocContinuation = false;
 
+            let prevListItemIndentation: number | undefined;
+
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i];
               const lineData = { line: line.trim() };
@@ -220,7 +223,7 @@ export default createRule<Options, MessageIds>({
                 continue;
               }
 
-              if (isCurrentLineJSDoc) {
+              if (isCurrentLineJSDoc && !insideCodeBlock) {
                 if (prevLine && !EMPTY_BLOCK_COMMENT_LINE.test(prevLine) && !JS_DOC_REGEX.test(prevLine)) {
                   context.report({ node: comment, messageId: 'spaceBeforeJSDoc', data: { ...lineData } });
                   break;
@@ -240,13 +243,31 @@ export default createRule<Options, MessageIds>({
 
               if (isListItem) {
                 const listItemText = line.replace(LIST_ITEM, '');
+                const spaces = listItemText.match(/^(\s+)/g)?.[0].length;
 
-                if (listItemText[0] !== ' ') {
+                prevListItemIndentation = line.match(LIST_ITEM_INDENTATION)?.[1].length;
+
+                if (spaces !== 1) {
                   context.report({ node: comment, messageId: 'invalidListItem', data: { ...lineData } });
                   break;
                 }
 
                 continue;
+              }
+
+              /**
+               * If we saw a list item before we check if the current line has the same indentation.
+               * If not, we simply continue.
+               */
+              if (prevListItemIndentation != null && prevListItemIndentation > 0) {
+                const currentLineIdentation = line.match(/^\s*\*(\s*)/)?.[1].length;
+
+                if (currentLineIdentation === prevListItemIndentation) {
+                  continue;
+                } else {
+                  // indentation is different so we reset the state and continue with checking other rules
+                  prevListItemIndentation = undefined;
+                }
               }
 
               if (newParagraph && !jsdocContinuation) {
