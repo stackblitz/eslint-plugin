@@ -10,7 +10,8 @@ export const defaultOptions = {
 
 type Options = [(typeof defaultOptions | undefined)?];
 
-const SPACE_CHARCODE = 32;
+const SPACE_CHARCODE = ' '.charCodeAt(0);
+const SLASH_CHARCODE = '/'.charCodeAt(0);
 const STAR = '*';
 const BLOCK_COMMENT_END = /^\s*$/;
 const EMPTY_BLOCK_COMMENT_LINE = /^\s*\*$/;
@@ -135,10 +136,11 @@ export default createRule<Options, MessageIds>({
 
         for (const comment of comments) {
           if (comment.type === 'Line') {
+            const firstChar = comment.value?.charCodeAt(0);
             const secondChar = comment.value[1];
             const lastChar = comment.value[comment.value.length - 1];
 
-            if (comment.value?.charCodeAt(0) !== SPACE_CHARCODE && !isRegion(comment.value)) {
+            if (firstChar !== SPACE_CHARCODE && firstChar !== SLASH_CHARCODE && (!isRegion(comment.value))) {
               context.report({ node: comment, messageId: 'shouldStartWithSpace' });
 
               // if this one fails, the others are interpreted incorrectly
