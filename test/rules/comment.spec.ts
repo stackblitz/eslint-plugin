@@ -17,6 +17,11 @@ ruleTester().run(ruleName, rule, {
     ),
     fromFixture(
       stripIndent`
+        /// <reference path="../../../../node_modules/@types/should_be_valid.d.ts" />
+      `
+    ),
+    fromFixture(
+      stripIndent`
         // \` should be valid
       `
     ),
