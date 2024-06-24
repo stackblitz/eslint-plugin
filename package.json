@@ -15,9 +15,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint \"{src,test}/**/*.{js,ts,json,jsonc}\"",
-    "preversion": "npm test",
+    "preversion": "pnpm test",
     "postversion": "git push && git push --tags",
-    "prepack": "npm run build"
+    "prepack": "pnpm run build"
   },
   "engines": {
     "node": "^18.0.0 || ^20.0.0"
