@@ -86,7 +86,6 @@ export default createRule<Options, MessageIds>({
       description: oneLine`Enforce block comments to start with a capital first letter and end with a dot and
         line comments to not start with a capital first letter and no dot
       `,
-      recommended: 'error',
     },
     fixable: 'code',
     schema: [
@@ -130,9 +129,9 @@ export default createRule<Options, MessageIds>({
       Program() {
         const { ignoredWords, allowedParagraphEndings } = { ...defaultOptions, ...options };
 
-        const source = context.getSourceCode();
+        const { sourceCode } = context;
 
-        const comments = source.getAllComments();
+        const comments = sourceCode.getAllComments();
 
         for (const comment of comments) {
           if (comment.type === 'Line') {
@@ -140,7 +139,7 @@ export default createRule<Options, MessageIds>({
             const secondChar = comment.value[1];
             const lastChar = comment.value[comment.value.length - 1];
 
-            if (firstChar !== SPACE_CHARCODE && firstChar !== SLASH_CHARCODE && (!isRegion(comment.value))) {
+            if (firstChar !== SPACE_CHARCODE && firstChar !== SLASH_CHARCODE && !isRegion(comment.value)) {
               context.report({ node: comment, messageId: 'shouldStartWithSpace' });
 
               // if this one fails, the others are interpreted incorrectly
@@ -155,7 +154,7 @@ export default createRule<Options, MessageIds>({
               context.report({ node: comment, messageId: 'lineCommentCapital' });
             }
 
-            if (lastChar === '.') {
+            if (lastChar === '.' && !comment.value.endsWith('etc.') && !comment.value.endsWith(' ...')) {
               context.report({ node: comment, messageId: 'lineCommentEnding' });
             }
 

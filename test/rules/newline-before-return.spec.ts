@@ -2,7 +2,9 @@ import { stripIndent } from 'common-tags';
 import rule, { messageId, ruleName } from '../../src/rules/newline-before-return';
 import { ruleTester } from '../utils';
 
-ruleTester().run(ruleName, rule, {
+ruleTester({
+  name: ruleName,
+  rule,
   valid: [
     {
       code: stripIndent`
@@ -56,6 +58,14 @@ ruleTester().run(ruleName, rule, {
           messageId,
         },
       ],
+      output: stripIndent`
+        function foo() {
+          const foo = 1;
+          const bar = 2;
+
+          return foo && bar;
+        }
+      `,
     },
     {
       code: stripIndent`
@@ -73,6 +83,17 @@ ruleTester().run(ruleName, rule, {
           messageId,
         },
       ],
+      output: stripIndent`
+        function foo() {
+          const foo = 1;
+
+          if (foo) {
+            // do some work
+          }
+
+          return 1;
+        }
+      `,
     },
   ],
 });

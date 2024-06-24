@@ -1,4 +1,4 @@
-import { TSESTree } from '@typescript-eslint/utils';
+import type { TSESTree } from '@typescript-eslint/utils';
 import { oneLine } from 'common-tags';
 import { createRule } from '../util';
 
@@ -9,7 +9,7 @@ export const messageId = 'default';
 type Options = [
   {
     maxConsecutiveLines: number;
-  }
+  },
 ];
 
 type MessageIds = typeof messageId;
@@ -22,7 +22,6 @@ export default createRule<Options, MessageIds>({
       description: oneLine`
         Require an empty line before 'return' statements, only for block statemenet with more than 2 nodes
       `,
-      recommended: 'error',
     },
     fixable: 'whitespace',
     hasSuggestions: true,
@@ -49,7 +48,7 @@ export default createRule<Options, MessageIds>({
   create: (context, [options]) => {
     const { maxConsecutiveLines } = options;
 
-    const sourceCode = context.getSourceCode();
+    const { sourceCode } = context;
 
     function calcCommentLines(node: TSESTree.Node, lineNumTokenBefore: number) {
       const comments = sourceCode.getCommentsBefore(node);
@@ -125,22 +124,17 @@ export default createRule<Options, MessageIds>({
         context.report({
           node,
           messageId: 'default',
-          suggest: [
-            {
-              messageId,
-              fix(fixer) {
-                const tokenBefore = sourceCode.getTokenBefore(node);
+          fix: (fixer) => {
+            const tokenBefore = sourceCode.getTokenBefore(node);
 
-                if (!tokenBefore) {
-                  return null;
-                }
+            if (!tokenBefore) {
+              return null;
+            }
 
-                const newlines = node.loc.start.line === tokenBefore.loc.end.line ? '\n\n' : '\n';
+            const newlines = node.loc.start.line === tokenBefore.loc.end.line ? '\n\n' : '\n';
 
-                return fixer.insertTextAfter(tokenBefore, newlines);
-              },
-            },
-          ],
+            return fixer.insertTextAfter(tokenBefore, newlines);
+          },
         });
       },
     };

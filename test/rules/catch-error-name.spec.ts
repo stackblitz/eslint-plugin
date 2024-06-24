@@ -2,7 +2,9 @@ import { stripIndent } from 'common-tags';
 import rule, { ruleName } from '../../src/rules/catch-error-name';
 import { ruleTester } from '../utils';
 
-ruleTester().run(ruleName, rule, {
+ruleTester({
+  name: ruleName,
+  rule,
   valid: [
     {
       code: stripIndent`
@@ -20,16 +22,33 @@ ruleTester().run(ruleName, rule, {
           messageId: 'default',
         },
       ],
+      output: 'try {} catch (error) {}',
     },
     {
       code: stripIndent`
-      try {} catch (e) {}
+        try {} catch (e) {}
       `,
       errors: [
         {
           messageId: 'default',
         },
       ],
+      output: 'try {} catch (error) {}',
+    },
+    {
+      code: stripIndent`
+        try {
+        } catch (e) {}
+      `,
+      errors: [
+        {
+          messageId: 'default',
+        },
+      ],
+      output: stripIndent`
+        try {
+        } catch (error) {}
+      `,
     },
   ],
 });

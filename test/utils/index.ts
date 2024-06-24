@@ -1,19 +1,24 @@
-import { RuleTester } from 'eslint';
-import { ESLintUtils, TSESLint } from '@typescript-eslint/utils';
+import tsParser from '@typescript-eslint/parser';
+import { TSESLint } from '@typescript-eslint/utils';
+import { Linter, RuleTester } from 'eslint';
+import type { RuleTesterInitOptions, TestCasesOptions } from 'eslint-vitest-rule-tester';
+import { run as _run } from 'eslint-vitest-rule-tester';
+import * as jsoncParser from 'jsonc-eslint-parser';
 
-export function ruleTester() {
-  return new ESLintUtils.RuleTester({
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-      ecmaVersion: 6,
-      sourceType: 'module',
-    },
+export function ruleTester(options: TestCasesOptions & RuleTesterInitOptions) {
+  return _run({
+    recursive: false,
+    verifyAfterFix: false,
+    parser: tsParser as Linter.ParserModule,
+    ...options,
   });
 }
 
 export function ruleTesterForJSONC() {
   return new RuleTester({
-    parser: require.resolve('jsonc-eslint-parser'),
+    languageOptions: {
+      parser: jsoncParser,
+    },
   }) as unknown as {
     run<TMessageIds extends string, TOptions extends Readonly<unknown[]>>(
       name: string,
@@ -21,7 +26,7 @@ export function ruleTesterForJSONC() {
       tests: {
         valid?: Array<string | RuleTester.ValidTestCase> | undefined;
         invalid?: RuleTester.InvalidTestCase[] | undefined;
-      }
+      },
     ): void;
   };
 }

@@ -4,8 +4,8 @@
 
 ## Rule Details
 
-This rule extends the base [`eslint/lines-around-comment`](https://eslint.org/docs/rules/lines-around-comment) rule.
-It adds support for allowing comments at the start and end of `interface`'s, type literals and `enum`s.
+This rule extends the base [`@stylistic/ts/lines-around-comment`](https://eslint.style/rules/ts/lines-around-comment) rule.
+It adds support for allowing comments at the start and end of `switch` statements, and fixes a bug with enums, arrays, and object literals.
 
 ## How to use
 
@@ -17,92 +17,18 @@ It adds support for allowing comments at the start and end of `interface`'s, typ
 
 ## Options
 
-See [`eslint/lines-around-comment`](https://eslint.org/docs/rules/lines-around-comment#options-50) options.
+See [`@stylistic/ts/lines-around-comment`](https://eslint.style/rules/ts/lines-around-comment#options) options.
 This rule adds the following options:
 
 ```ts
-interface Options extends BaseLinesAroundCommentOptions {
+interface Options extends BaseRuleOptions {
   allowSwitchStart?: boolean;
   allowSwitchEnd?: boolean;
-  allowEnumStart?: boolean;
-  allowEnumEnd?: boolean;
-  allowInterfaceStart?: boolean;
-  allowInterfaceEnd?: boolean;
-  allowMemberCallExpression?: boolean;
+  allowMemberCallExpressionStart?: boolean;
 }
 ```
 
 It also overrides `allowObjectStart` and `allowObjectEnd` to work with type object literals.
-
-### `allowInterfaceStart`
-
-Example of a correct code when `allowInterfaceStart` is set to `true`:
-
-```ts
-interface InterfaceA {
-  // some comment
-  foo: boolean;
-}
-
-interface InterfaceA {
-  /**
-   * Some multi-line comment
-   */
-  foo: boolean;
-}
-```
-
-### `allowInterfaceEnd`
-
-Example of a correct code when `allowInterfaceEnd` is set to `true`:
-
-```ts
-interface InterfaceA {
-  foo: boolean; // some comment
-}
-
-interface InterfaceA {
-  foo: boolean /** comment */;
-}
-```
-
-### `allowEnumStart`
-
-Example of a correct code when `allowEnumStart` is set to `true`:
-
-```ts
-enum MyEnum {
-  // some comment
-  Value,
-}
-
-enum MyEnum {
-  /**
-   * Some multi-line comment
-   */
-  Value,
-}
-```
-
-### `allowEnumEnd`
-
-Example of a correct code when `allowEnumEnd` is set to `true`:
-
-```ts
-enum MyEnum {
-  // some comment
-  Value,
-}
-
-enum MyEnum {
-  Value /* some comment */,
-}
-
-enum MyEnum {
-  Value,
-  /** comment */
-}
-```
 
 ### `allowSwitchStart`
 
@@ -167,6 +93,10 @@ switch (someValue) {
 Example of a correct code when `allowMemberCallExpression` is set to `true`:
 
 ```ts
+doSomething()
+  // some comment
+  .a.b.c.d.replace('', '');
+
 doSomething()
   .a // some comment
   .b // some comment

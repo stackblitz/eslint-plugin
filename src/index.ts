@@ -1,8 +1,15 @@
-import recommended from './configs/recommended';
-import rules from './rules';
+import { recommended } from './configs/recommended';
 
-export = {
-  rules,
+const { name, version } = require('../package.json') as {
+  name: string;
+  version: string;
+};
+
+module.exports = {
+  meta: {
+    name,
+    version,
+  },
   configs: {
     recommended,
   },

@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Test File (Debug)",
+      "program": "${workspaceRoot}/node_modules/.bin/vitest",
+      "args": ["--config", "${workspaceRoot}/vitest.config.ts", "${relativeFile}"],
+      "outputCapture": "std",
+      "internalConsoleOptions": "openOnSessionStart",
+      "envFile": "${workspaceRoot}/.env"
+    }
+  ]
+}

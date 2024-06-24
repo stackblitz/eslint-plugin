@@ -8,7 +8,7 @@ type Options = [
   {
     name: string;
     ignore: string[];
-  }
+  },
 ];
 
 export const defaultOptions: Options = [
@@ -26,7 +26,6 @@ export default createRule<Options, MessageIds>({
     type: 'suggestion',
     docs: {
       description: 'Enforce a specific parameter name in catch clauses',
-      recommended: 'error',
     },
     fixable: 'code',
     schema: [
@@ -63,6 +62,13 @@ export default createRule<Options, MessageIds>({
               data: {
                 originalName,
                 fixedName: expectedName,
+              },
+              fix: (fixer) => {
+                if (node.param) {
+                  return fixer.replaceText(node.param, 'error');
+                }
+
+                return null;
               },
             });
           }
