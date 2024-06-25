@@ -1,6 +1,6 @@
 {
   "name": "@blitz/eslint-plugin",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "description": "An ESLint config to enforce a consistent code styles across StackBlitz projects",
   "keywords": [
     "eslint",
@@ -17,11 +17,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc -b",
+    "build": "rm -rf dist && tsc -b",
     "test": "jest",
+    "lint": "eslint '{src,test}/**/*'",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
     "prepack": "npm run build"
+  },
+  "engines": {
+    "node": "^18.0.0 || ^20.0.0"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "5.59.7",

@@ -20,16 +20,22 @@ ruleTester().run(ruleName, rule, {
           messageId: 'default',
         },
       ],
+      output: stripIndent`
+        try {} catch (error) {}
+      `,
     },
     {
       code: stripIndent`
-      try {} catch (e) {}
+        try {} catch (e) {}
       `,
       errors: [
         {
           messageId: 'default',
         },
       ],
+      output: stripIndent`
+        try {} catch (error) {}
+      `,
     },
   ],
 });

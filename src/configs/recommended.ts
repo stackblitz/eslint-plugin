@@ -91,6 +91,11 @@ export = {
         prev: '*',
         next: 'break',
       },
+      {
+        blankLine: 'always',
+        prev: 'if',
+        next: '*',
+      },
     ],
 
     '@typescript-eslint/no-unused-vars': [
