@@ -22,7 +22,9 @@ ruleTester({
           messageId: 'default',
         },
       ],
-      output: 'try {} catch (error) {}',
+      output: stripIndent`
+        try {} catch (error) {}
+      `,
     },
     {
       code: stripIndent`

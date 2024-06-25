@@ -287,7 +287,7 @@ export default createRule<Options, MessageIds>({
 
     function shouldHandleComment(token: TSESTree.Comment) {
       const isKnownParentNode = [AST_NODE_TYPES.MemberExpression, AST_NODE_TYPES.IfStatement].some(
-        (nodeType) => getParentNodeOfToken(token)?.type === nodeType,
+        (nodeType) => getParentNodeOfToken(token)?.type === nodeType
       );
 
       const isNearStartOrEndOfKnownNode = START_END_NODES.some((nodeType) => {
