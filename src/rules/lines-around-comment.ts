@@ -1,5 +1,5 @@
 import { AST_NODE_TYPES, ESLintUtils, TSESLint, TSESTree } from '@typescript-eslint/utils';
-import { createRule, InferMessageIdsTypeFromRule, InferOptionsTypeFromRule } from '../util';
+import { InferMessageIdsTypeFromRule, InferOptionsTypeFromRule, createRule } from '../util';
 
 export const ruleName = 'lines-around-comment';
 
@@ -44,8 +44,6 @@ export default createRule<Options, MessageIds>({
     docs: {
       description: 'Require empty lines around comments',
       recommended: false,
-      extendsBaseRule: true,
-      requiresTypeChecking: true,
     },
     schema: [
       {
@@ -213,7 +211,7 @@ export default createRule<Options, MessageIds>({
 
     return {
       Program: (node) => {
-        rules.Program(node);
+        rules.Program?.(node);
       },
     };
   },

@@ -64,6 +64,13 @@ export default createRule<Options, MessageIds>({
                 originalName,
                 fixedName: expectedName,
               },
+              fix: (fixer) => {
+                if (node.param) {
+                  return fixer.replaceText(node.param, 'error');
+                }
+
+                return null;
+              },
             });
           }
         }

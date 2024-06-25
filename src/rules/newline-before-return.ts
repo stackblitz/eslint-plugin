@@ -125,22 +125,17 @@ export default createRule<Options, MessageIds>({
         context.report({
           node,
           messageId: 'default',
-          suggest: [
-            {
-              messageId,
-              fix(fixer) {
-                const tokenBefore = sourceCode.getTokenBefore(node);
+          fix: (fixer) => {
+            const tokenBefore = sourceCode.getTokenBefore(node);
 
-                if (!tokenBefore) {
-                  return null;
-                }
+            if (!tokenBefore) {
+              return null;
+            }
 
-                const newlines = node.loc.start.line === tokenBefore.loc.end.line ? '\n\n' : '\n';
+            const newlines = node.loc.start.line === tokenBefore.loc.end.line ? '\n\n' : '\n';
 
-                return fixer.insertTextAfter(tokenBefore, newlines);
-              },
-            },
-          ],
+            return fixer.insertTextAfter(tokenBefore, newlines);
+          },
         });
       },
     };

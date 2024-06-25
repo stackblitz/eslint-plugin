@@ -56,6 +56,14 @@ ruleTester().run(ruleName, rule, {
           messageId,
         },
       ],
+      output: stripIndent`
+        function foo() {
+          const foo = 1;
+          const bar = 2;
+
+          return foo && bar;
+        }
+      `,
     },
     {
       code: stripIndent`
@@ -73,6 +81,17 @@ ruleTester().run(ruleName, rule, {
           messageId,
         },
       ],
+      output: stripIndent`
+        function foo() {
+          const foo = 1;
+
+          if (foo) {
+            // do some work
+          }
+
+          return 1;
+        }
+      `,
     },
   ],
 });

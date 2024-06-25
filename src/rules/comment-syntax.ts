@@ -140,7 +140,7 @@ export default createRule<Options, MessageIds>({
             const secondChar = comment.value[1];
             const lastChar = comment.value[comment.value.length - 1];
 
-            if (firstChar !== SPACE_CHARCODE && firstChar !== SLASH_CHARCODE && (!isRegion(comment.value))) {
+            if (firstChar !== SPACE_CHARCODE && firstChar !== SLASH_CHARCODE && !isRegion(comment.value)) {
               context.report({ node: comment, messageId: 'shouldStartWithSpace' });
 
               // if this one fails, the others are interpreted incorrectly
@@ -155,7 +155,7 @@ export default createRule<Options, MessageIds>({
               context.report({ node: comment, messageId: 'lineCommentCapital' });
             }
 
-            if (lastChar === '.') {
+            if (lastChar === '.' && !comment.value.endsWith('etc.') && !comment.value.endsWith('...')) {
               context.report({ node: comment, messageId: 'lineCommentEnding' });
             }
 
