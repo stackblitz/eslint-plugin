@@ -1,53 +1,79 @@
 import { stripIndent } from 'common-tags';
-import { fromFixture } from 'eslint-etc';
 import rule, { defaultOptions, ruleName } from '../../src/rules/comment-syntax';
 import { ruleTester, ruleTesterForJSONC } from '../utils';
 
-ruleTester().run(ruleName, rule, {
+ruleTester({
+  name: ruleName,
+  rule,
   valid: [
-    fromFixture(
-      stripIndent`
+    {
+      code: stripIndent`
         // no capital or dots allowed here
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         // SHOULD be valid
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
+        // #region foo
+      `,
+    },
+    {
+      code: stripIndent`
+        // #endregion foo
+      `,
+    },
+    {
+      code: stripIndent`
+        // foo...
+      `,
+    },
+    {
+      code: stripIndent`
+        // foo ...
+      `,
+    },
+    {
+      code: stripIndent`
+        // foo etc.
+      `,
+    },
+    {
+      code: stripIndent`
         /// <reference path="../../../../node_modules/@types/should_be_valid.d.ts" />
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         // \` should be valid
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * This should start with a capital and end with a dot.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Parahraphs can end on an exclamation mark!
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Parahraphs can end on a question mark?
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Foo:
          * \`\`\`
@@ -55,47 +81,47 @@ ruleTester().run(ruleName, rule, {
          * \`\`\`
          * Some text.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * THIS should start with a capital and end with a dot.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * \` should be valid.
          */
-      `
-    ),
-    fromFixture(
-      `
+      `,
+    },
+    {
+      code: `
             /**
              * Content the replace the file with.
              */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Run a script from the \`package.json\`. Optionally you can provide \`env\` variables passed:
          * \`\`\`
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * @param {number} port
          * @param {string} coep
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * For example:
          * \`\`\`
@@ -104,68 +130,68 @@ ruleTester().run(ruleName, rule, {
          * bar
          * \`\`\`
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         new Int32Array(sharedArrayBuffer, 0 /* offset */, 1 /* length */);
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /* Denotes a text frame */
         TEXT = 0x1
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Foobar
          * \`export default true\` --► \`const 𝐝𝐞𝐟𝐚𝐮𝐥𝐭 = true\`
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         //#region
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         //#endregion
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Some comment.
          *
          * @ref foo
          * @ref bar
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Some comment.
          *
          * @ref foo
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Some list:
          * - a
          * - b
          * - c
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Some comment.
          *
@@ -175,10 +201,10 @@ ruleTester().run(ruleName, rule, {
          *
          * @ref bar
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Some comment.
          *
@@ -189,36 +215,36 @@ ruleTester().run(ruleName, rule, {
          * @ref foobar
          * foobar.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * - do this
          * - do that
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * 1. do this
          * 2. do that
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * 1. foo
          *    bar
          * 2. baz
          *    unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * 1. foo
          *    bar
@@ -226,10 +252,10 @@ ruleTester().run(ruleName, rule, {
          * 2. baz
          *    unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * 1. foo
          *    bar
@@ -239,10 +265,10 @@ ruleTester().run(ruleName, rule, {
          *    sadipscing elitr, sed diam nonumy eirmod
          *    tempor.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * 1. foo
          *    bar
@@ -250,10 +276,10 @@ ruleTester().run(ruleName, rule, {
          * 2. baz
          *    unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * 1. foo
          *    bar
@@ -261,30 +287,30 @@ ruleTester().run(ruleName, rule, {
          *    unicorn
          * Some paragraph at the end.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          *     1. foo
          *        bar
          *   2. baz
          *      unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * - foo
          *   bar
          * - baz
          *   unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * - foo
          *   bar
@@ -293,10 +319,10 @@ ruleTester().run(ruleName, rule, {
          *   sadipscing elitr, sed diam nonumy eirmod
          *   tempor.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * - foo
          *   bar
@@ -304,10 +330,10 @@ ruleTester().run(ruleName, rule, {
          * - baz
          *   unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * - foo
          *   bar
@@ -315,10 +341,10 @@ ruleTester().run(ruleName, rule, {
          *   unicorn
          * Some paragraph at the end.
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          *   - foo
          *     bar
@@ -326,18 +352,18 @@ ruleTester().run(ruleName, rule, {
          *     - baz
          *       unicorn
          */
-      `
-    ),
-    fromFixture(
-      stripIndent`
+      `,
+    },
+    {
+      code: stripIndent`
         /**
          * Some diagram:
          * \`\`\`
          * @ some text here
          * \`\`\`
          */
-      `
-    ),
+      `,
+    },
     {
       code: stripIndent`
         /**

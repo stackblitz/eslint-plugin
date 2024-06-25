@@ -1,41 +1,115 @@
-import { AST_NODE_TYPES, ESLintUtils, TSESLint, TSESTree } from '@typescript-eslint/utils';
-import { InferMessageIdsTypeFromRule, InferOptionsTypeFromRule, createRule } from '../util';
+import { AST_NODE_TYPES, AST_TOKEN_TYPES, TSESTree } from '@typescript-eslint/utils';
+import { isCommentToken, isTokenOnSameLine } from '@typescript-eslint/utils/ast-utils';
+import { createRule } from '../util';
+import { getESLintCoreRule } from '../util/getESLintCoreRule';
 
 export const ruleName = 'lines-around-comment';
 
-const baseRule = ESLintUtils.nullThrows(
-  require('eslint/use-at-your-own-risk').builtinRules.get(ruleName),
-  ''
-) as typeof import('eslint/lib/rules/lines-around-comment');
+const baseRule = getESLintCoreRule(ruleName);
 
-export type BaseOptions = InferOptionsTypeFromRule<typeof baseRule>;
-export type MessageIds = InferMessageIdsTypeFromRule<typeof baseRule>;
+const END_REGION_PRAGMA = ' #endregion';
+const COMMENTS_IGNORE_PATTERN = /^\s*(?:eslint|jshint\s+|jslint\s+|istanbul\s+|globals?\s+|exported\s+|jscs)/u;
 
-export const defaultOptions = {
+const START_END_NODES = [
+  AST_NODE_TYPES.TSEnumDeclaration,
+  AST_NODE_TYPES.TSEnumBody,
+  AST_NODE_TYPES.SwitchStatement,
+  AST_NODE_TYPES.ArrayExpression,
+  AST_NODE_TYPES.ArrayPattern,
+  AST_NODE_TYPES.ObjectExpression,
+  AST_NODE_TYPES.TSTypeLiteral,
+];
+
+function getEmptyLineNums(lines: string[]): number[] {
+  const emptyLines = lines
+    .map((line, i) => {
+      return {
+        code: line.trim(),
+        num: i + 1,
+      };
+    })
+    .filter((line) => !line.code)
+    .map((line) => line.num);
+
+  return emptyLines;
+}
+
+function getCommentLineNums(comments: TSESTree.Comment[]): number[] {
+  const lines: number[] = [];
+
+  comments.forEach((token) => {
+    const start = token.loc.start.line;
+    const end = token.loc.end.line;
+
+    lines.push(start, end);
+  });
+
+  return lines;
+}
+
+export interface BaseOptions {
+  beforeBlockComment?: boolean;
+  afterBlockComment?: boolean;
+  beforeLineComment?: boolean;
+  afterLineComment?: boolean;
+  allowBlockStart?: boolean;
+  allowBlockEnd?: boolean;
+  allowClassStart?: boolean;
+  allowClassEnd?: boolean;
+  allowObjectStart?: boolean;
+  allowObjectEnd?: boolean;
+  allowArrayStart?: boolean;
+  allowArrayEnd?: boolean;
+  allowInterfaceStart?: boolean;
+  allowInterfaceEnd?: boolean;
+  allowTypeStart?: boolean;
+  allowTypeEnd?: boolean;
+  allowEnumStart?: boolean;
+  allowEnumEnd?: boolean;
+  allowModuleStart?: boolean;
+  allowModuleEnd?: boolean;
+  ignorePattern?: string;
+  applyDefaultIgnorePatterns?: boolean;
+  afterHashbangComment?: boolean;
+}
+
+export interface ExtendedOptions extends BaseOptions {
+  allowSwitchStart?: boolean;
+  allowSwitchEnd?: boolean;
+  allowMemberCallExpression?: boolean;
+}
+
+export type MessageIds = 'after' | 'before';
+
+export const defaultOptions: ExtendedOptions = {
   beforeBlockComment: true,
   afterBlockComment: false,
-  beforeLineComment: false,
+  beforeLineComment: true,
   afterLineComment: false,
   allowBlockStart: false,
   allowBlockEnd: false,
+  allowClassStart: false,
+  allowClassEnd: false,
   allowObjectStart: false,
   allowObjectEnd: false,
   allowArrayStart: false,
   allowArrayEnd: false,
-  allowClassStart: false,
-  allowClassEnd: false,
-  allowEnumStart: false,
-  allowEnumEnd: false,
-  allowSwitchStart: false,
-  allowSwitchEnd: false,
   allowInterfaceStart: false,
   allowInterfaceEnd: false,
+  allowTypeStart: false,
+  allowTypeEnd: false,
+  allowEnumStart: false,
+  allowEnumEnd: false,
+  allowModuleStart: false,
+  allowModuleEnd: false,
+  allowSwitchStart: false,
+  allowSwitchEnd: false,
   allowMemberCallExpression: false,
-  applyDefaultIgnorePatterns: false,
   ignorePattern: '',
+  applyDefaultIgnorePatterns: false,
 };
 
-type Options = [(typeof defaultOptions | undefined)?];
+type Options = [typeof defaultOptions];
 
 export default createRule<Options, MessageIds>({
   name: ruleName,
@@ -43,7 +117,6 @@ export default createRule<Options, MessageIds>({
     type: 'layout',
     docs: {
       description: 'Require empty lines around comments',
-      recommended: false,
     },
     schema: [
       {
@@ -73,64 +146,65 @@ export default createRule<Options, MessageIds>({
             type: 'boolean',
             default: false,
           },
-          allowSwitchStart: {
-            type: 'boolean',
-            default: false,
-          },
-          allowSwitchEnd: {
-            type: 'boolean',
-            default: false,
-          },
-          allowEnumStart: {
-            type: 'boolean',
-            default: false,
-          },
-          allowEnumEnd: {
-            type: 'boolean',
-            default: false,
-          },
-          allowInterfaceStart: {
-            type: 'boolean',
-            default: false,
-          },
-          allowInterfaceEnd: {
-            type: 'boolean',
-            default: false,
-          },
           allowClassStart: {
             type: 'boolean',
-            default: false,
           },
           allowClassEnd: {
             type: 'boolean',
-            default: false,
           },
           allowObjectStart: {
             type: 'boolean',
-            default: false,
           },
           allowObjectEnd: {
             type: 'boolean',
-            default: false,
           },
           allowArrayStart: {
             type: 'boolean',
-            default: false,
           },
           allowArrayEnd: {
             type: 'boolean',
-            default: false,
+          },
+          allowInterfaceStart: {
+            type: 'boolean',
+          },
+          allowInterfaceEnd: {
+            type: 'boolean',
+          },
+          allowTypeStart: {
+            type: 'boolean',
+          },
+          allowTypeEnd: {
+            type: 'boolean',
+          },
+          allowEnumStart: {
+            type: 'boolean',
+          },
+          allowEnumEnd: {
+            type: 'boolean',
+          },
+          allowModuleStart: {
+            type: 'boolean',
+          },
+          allowModuleEnd: {
+            type: 'boolean',
+          },
+          allowSwitchStart: {
+            type: 'boolean',
+          },
+          allowSwitchEnd: {
+            type: 'boolean',
           },
           allowMemberCallExpression: {
             type: 'boolean',
-            default: false,
           },
           ignorePattern: {
             type: 'string',
           },
           applyDefaultIgnorePatterns: {
             type: 'boolean',
-            default: false,
+          },
+          afterHashbangComment: {
+            type: 'boolean',
           },
         },
         additionalProperties: false,
@@ -138,10 +212,20 @@ export default createRule<Options, MessageIds>({
     ],
     fixable: baseRule.meta.fixable,
     messages: baseRule.meta.messages,
+    hasSuggestions: baseRule.meta.hasSuggestions,
   },
   defaultOptions: [defaultOptions],
   create(context, [options]) {
-    const sourceCode = context.getSourceCode();
+    const { sourceCode } = context;
+    const comments = sourceCode.getAllComments();
+
+    const lines = sourceCode.lines;
+    const commentLines = getCommentLineNums(comments);
+    const emptyLines = getEmptyLineNums(lines);
+    const commentAndEmptyLines = new Set(commentLines.concat(emptyLines));
+
+    const defaultIgnoreRegExp = COMMENTS_IGNORE_PATTERN;
+    const customIgnoreRegExp = new RegExp(options.ignorePattern ?? '', 'u');
 
     function getParentNodeOfToken(token: TSESTree.Token) {
       return sourceCode.getNodeByRangeIndex(token.range[0]);
@@ -169,49 +253,203 @@ export default createRule<Options, MessageIds>({
       return node.type === AST_NODE_TYPES.MemberExpression && node.object.type === objectType;
     }
 
-    const allowSwitchStart = options?.allowSwitchStart;
-    const allowSwitchEnd = options?.allowSwitchEnd;
-    const allowEnumStart = options?.allowEnumStart;
-    const allowEnumEnd = options?.allowEnumEnd;
-    const allowInterfaceStart = options?.allowInterfaceStart;
-    const allowInterfaceEnd = options?.allowInterfaceEnd;
-    const allowObjectStart = options?.allowObjectStart;
-    const allowObjectEnd = options?.allowObjectEnd;
-    const allowMemberCallExpression = options?.allowMemberCallExpression;
+    function codeAroundComment(token: TSESTree.Token): boolean {
+      let currentToken: TSESTree.Token | null = token;
 
-    const rules = baseRule.create(
-      Object.create(context, {
-        report: {
-          enumerable: true,
-          value(descriptor: TSESLint.ReportDescriptor<MessageIds> & { node: TSESTree.Token }) {
-            const parentNode = getParentNodeOfToken(descriptor.node);
+      do {
+        currentToken = sourceCode.getTokenBefore(currentToken, {
+          includeComments: true,
+        });
+      } while (currentToken && isCommentToken(currentToken));
 
-            if (
-              (parentNode && parentNode.type === 'CallExpression') ||
-              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.SwitchStatement) && allowSwitchStart) ||
-              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.SwitchStatement) && allowSwitchEnd) ||
-              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSEnumDeclaration) && allowEnumStart) ||
-              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSEnumDeclaration) && allowEnumEnd) ||
-              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceStart) ||
-              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSInterfaceBody) && allowInterfaceEnd) ||
-              (isCommentAtParentStart(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectStart) ||
-              (isCommentAtParentEnd(descriptor.node, AST_NODE_TYPES.TSTypeLiteral) && allowObjectEnd) ||
-              ((isMemberExpression(parentNode, AST_NODE_TYPES.CallExpression) ||
-                isMemberExpression(parentNode, AST_NODE_TYPES.Identifier)) &&
-                allowMemberCallExpression)
-            ) {
-              return;
-            }
+      if (currentToken && isTokenOnSameLine(currentToken, token)) {
+        return true;
+      }
 
-            context.report(descriptor);
+      currentToken = token;
+
+      do {
+        currentToken = sourceCode.getTokenAfter(currentToken, {
+          includeComments: true,
+        });
+      } while (currentToken && isCommentToken(currentToken));
+
+      if (currentToken && isTokenOnSameLine(token, currentToken)) {
+        return true;
+      }
+
+      return false;
+    }
+
+    function isEndRegionPragma(token: TSESTree.Comment) {
+      return token.type === AST_TOKEN_TYPES.Line && token.value === END_REGION_PRAGMA;
+    }
+
+    function shouldHandleComment(token: TSESTree.Comment) {
+      const isKnownParentNode = [AST_NODE_TYPES.MemberExpression, AST_NODE_TYPES.IfStatement].some(
+        (nodeType) => getParentNodeOfToken(token)?.type === nodeType,
+      );
+
+      const isNearStartOrEndOfKnownNode = START_END_NODES.some((nodeType) => {
+        return isCommentAtParentStart(token, nodeType) || isCommentAtParentEnd(token, nodeType);
+      });
+
+      return isEndRegionPragma(token) || isKnownParentNode || isNearStartOrEndOfKnownNode;
+    }
+
+    function checkForEmptyLine(token: TSESTree.Comment, { before, after }: { before?: boolean; after?: boolean }) {
+      if (!shouldHandleComment(token)) {
+        return;
+      }
+
+      if (options.applyDefaultIgnorePatterns !== false && defaultIgnoreRegExp.test(token.value)) {
+        return;
+      }
+
+      if (options.ignorePattern && customIgnoreRegExp.test(token.value)) {
+        return;
+      }
+
+      if (isEndRegionPragma(token) && before) {
+        return;
+      }
+
+      if (codeAroundComment(token)) {
+        return;
+      }
+
+      const parentNode = getParentNodeOfToken(token);
+
+      // we always allow comments in an if-statement
+      if (parentNode?.type === AST_NODE_TYPES.IfStatement) {
+        return;
+      }
+
+      const prevLineNum = token.loc.start.line - 1;
+      const nextLineNum = token.loc.end.line + 1;
+
+      const previousTokenOrComment = sourceCode.getTokenBefore(token, {
+        includeComments: true,
+      });
+
+      const nextTokenOrComment = sourceCode.getTokenAfter(token, {
+        includeComments: true,
+      });
+
+      const _report = (messageId: MessageIds) => {
+        const lineStart = token.range[0] - token.loc.start.column;
+        const range = [lineStart, lineStart] as const;
+
+        context.report({
+          node: token,
+          messageId,
+          fix(fixer) {
+            return fixer.insertTextBeforeRange(range, '\n');
           },
-        },
-      })
-    );
+        });
+      };
+
+      const isAtStart = START_END_NODES.some((nodeType) => isCommentAtParentStart(token, nodeType));
+      const isAtEnd = START_END_NODES.some((nodeType) => isCommentAtParentEnd(token, nodeType));
+
+      const isStartAllowed =
+        options.allowEnumStart ||
+        options.allowSwitchStart ||
+        options.allowArrayStart ||
+        options.allowObjectStart ||
+        options.allowTypeStart;
+
+      const isEndAllowed =
+        options.allowEnumEnd ||
+        options.allowSwitchEnd ||
+        options.allowArrayEnd ||
+        options.allowObjectEnd ||
+        options.allowTypeEnd;
+
+      const isPrevLineEmpty = commentAndEmptyLines.has(prevLineNum);
+      const isNextLineEmpty = commentAndEmptyLines.has(nextLineNum);
+
+      const isPrevTokenOnSameLine =
+        isCommentToken(previousTokenOrComment!) && isTokenOnSameLine(previousTokenOrComment, token);
+
+      const isNextTokenOnSameLine = isCommentToken(nextTokenOrComment!) && isTokenOnSameLine(token, nextTokenOrComment);
+
+      if (isAtStart) {
+        if (!isStartAllowed && !isPrevLineEmpty && !isPrevTokenOnSameLine) {
+          _report('before');
+        }
+      } else if (
+        isMemberExpression(parentNode, AST_NODE_TYPES.CallExpression) ||
+        isMemberExpression(parentNode, AST_NODE_TYPES.Identifier)
+      ) {
+        if (!options.allowMemberCallExpression) {
+          _report('before');
+        }
+      } else if (before && !isPrevLineEmpty) {
+        _report('before');
+      }
+
+      if (isAtEnd) {
+        if (!isEndAllowed && !isNextLineEmpty && !isNextTokenOnSameLine) {
+          _report('after');
+        }
+      } else if (after && !isNextLineEmpty) {
+        _report('after');
+      }
+    }
+
+    const customReport: typeof context.report = (descriptor) => {
+      if ('node' in descriptor) {
+        if (descriptor.node.type === AST_TOKEN_TYPES.Line || descriptor.node.type === AST_TOKEN_TYPES.Block) {
+          if (shouldHandleComment(descriptor.node)) {
+            return undefined;
+          }
+        }
+      }
+
+      return context.report(descriptor);
+    };
+
+    const customContext = { report: customReport };
+
+    /**
+     * We can't directly proxy `context` because its `report` property is non-configurable
+     * and non-writable. So we proxy `customContext` and redirect all
+     * property access to the original context except for `report`.
+     */
+    const proxiedContext = new Proxy<typeof context>(customContext as typeof context, {
+      get(target, path, receiver): unknown {
+        if (path !== 'report') {
+          return Reflect.get(context, path, receiver);
+        }
+
+        return Reflect.get(target, path, receiver);
+      },
+    });
+
+    const rule = baseRule.create(proxiedContext);
 
     return {
       Program: (node) => {
-        rules.Program?.(node);
+        rule.Program?.(node);
+
+        comments.forEach((token) => {
+          if (token.type === AST_TOKEN_TYPES.Line) {
+            if (options.beforeLineComment || options.afterLineComment) {
+              checkForEmptyLine(token, {
+                after: options.afterLineComment,
+                before: options.beforeLineComment,
+              });
+            }
+          } else if (token.type === AST_TOKEN_TYPES.Block) {
+            if (options.beforeBlockComment || options.afterBlockComment) {
+              checkForEmptyLine(token, {
+                after: options.afterBlockComment,
+                before: options.beforeBlockComment,
+              });
+            }
+          }
+        });
       },
     };
   },

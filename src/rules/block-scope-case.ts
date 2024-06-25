@@ -10,7 +10,6 @@ export default createRule({
     type: 'layout',
     docs: {
       description: 'Ensures all case statements are block scoped',
-      recommended: 'error',
     },
     fixable: 'code',
     schema: [],
