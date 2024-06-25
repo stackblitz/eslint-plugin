@@ -14,7 +14,7 @@
     "build": "rm -rf dist && tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint \"{src,test}/**/*.{js,ts,json,jsonc}\"",
+    "lint": "eslint '{src,test}/**/*'",
     "preversion": "pnpm test",
     "postversion": "git push && git push --tags",
     "prepack": "pnpm run build"
