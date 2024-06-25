@@ -154,7 +154,7 @@ export default createRule<Options, MessageIds>({
               context.report({ node: comment, messageId: 'lineCommentCapital' });
             }
 
-            if (lastChar === '.' && !comment.value.endsWith('etc.') && !comment.value.endsWith(' ...')) {
+            if (lastChar === '.' && !comment.value.endsWith('etc.') && !comment.value.endsWith('...')) {
               context.report({ node: comment, messageId: 'lineCommentEnding' });
             }
 

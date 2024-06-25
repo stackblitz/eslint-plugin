@@ -18,6 +18,31 @@ ruleTester({
     },
     {
       code: stripIndent`
+        // #region foo
+      `,
+    },
+    {
+      code: stripIndent`
+        // #endregion foo
+      `,
+    },
+    {
+      code: stripIndent`
+        // foo...
+      `,
+    },
+    {
+      code: stripIndent`
+        // foo ...
+      `,
+    },
+    {
+      code: stripIndent`
+        // foo etc.
+      `,
+    },
+    {
+      code: stripIndent`
         /// <reference path="../../../../node_modules/@types/should_be_valid.d.ts" />
       `,
     },
