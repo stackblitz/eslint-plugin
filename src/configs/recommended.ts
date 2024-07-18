@@ -10,6 +10,9 @@ import { jsonConfigs } from './json';
 import { tsFileExtensions, tsRules, type TSRuleExtensions } from './typescript';
 import { getFiles } from './utils';
 
+// @ts-ignore -- untyped
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+
 interface RuleExtensions {
   ts?: TSRuleExtensions;
 }
@@ -56,6 +59,11 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       rules: {
         ...tsRules(extenions?.ts),
       },
+    },
+    {
+      files: [...tsFileExtensions, ...jsFileExtensions],
+      plugins: { unicorn: eslintPluginUnicorn },
+      rules: { 'unicorn/prefer-node-protocol': 'error' },
     },
     {
       name: 'blitz/import',
