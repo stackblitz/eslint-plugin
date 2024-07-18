@@ -58,6 +58,8 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       },
     },
     {
+      name: 'blitz/import',
+      files: [...tsFileExtensions, ...jsFileExtensions],
       plugins: {
         import: pluginImport,
       },
