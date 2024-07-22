@@ -3,15 +3,13 @@ import * as tsParser from '@typescript-eslint/parser';
 import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
 import pluginImport from 'eslint-plugin-import-x';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import tseslint from 'typescript-eslint';
 import { rules as blitzRules } from '../rules';
 import { jsFileExtensions, jsRules } from './javascript';
 import { jsonConfigs } from './json';
 import { tsFileExtensions, tsRules, type TSRuleExtensions } from './typescript';
 import { getFiles } from './utils';
-
-// @ts-ignore -- untyped
-import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 
 interface RuleExtensions {
   ts?: TSRuleExtensions;
