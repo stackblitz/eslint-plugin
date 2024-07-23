@@ -1,6 +1,7 @@
 import stylisticTS from '@stylistic/eslint-plugin-ts';
 import * as tsParser from '@typescript-eslint/parser';
 import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
+import pluginImport from 'eslint-plugin-import-x';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import tseslint from 'typescript-eslint';
 import { rules as blitzRules } from '../rules';
@@ -54,6 +55,17 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       },
       rules: {
         ...tsRules(extenions?.ts),
+      },
+    },
+    {
+      name: 'blitz/import',
+      files: [...tsFileExtensions, ...jsFileExtensions],
+      plugins: {
+        import: pluginImport,
+      },
+      rules: {
+        // https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/order.md
+        'import/order': ['error', { alphabetize: { order: 'asc' } }],
       },
     },
   ];
