@@ -59,19 +59,15 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       },
     },
     {
-      files: [...tsFileExtensions, ...jsFileExtensions],
-      plugins: { unicorn: eslintPluginUnicorn },
-      rules: { 'unicorn/prefer-node-protocol': 'error' },
-    },
-    {
-      name: 'blitz/import',
+      name: 'blitz/recommended-imports',
       files: [...tsFileExtensions, ...jsFileExtensions],
       plugins: {
         import: pluginImport,
+        unicorn: eslintPluginUnicorn,
       },
       rules: {
-        // https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/order.md
         'import/order': ['error', { alphabetize: { order: 'asc' } }],
+        'unicorn/prefer-node-protocol': 'error',
       },
     },
   ];
