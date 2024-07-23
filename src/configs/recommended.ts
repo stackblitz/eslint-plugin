@@ -3,6 +3,7 @@ import * as tsParser from '@typescript-eslint/parser';
 import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
 import pluginImport from 'eslint-plugin-import-x';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import tseslint from 'typescript-eslint';
 import { rules as blitzRules } from '../rules';
 import { jsFileExtensions, jsRules } from './javascript';
@@ -58,14 +59,15 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       },
     },
     {
-      name: 'blitz/import',
+      name: 'blitz/recommended-imports',
       files: [...tsFileExtensions, ...jsFileExtensions],
       plugins: {
         import: pluginImport,
+        unicorn: eslintPluginUnicorn,
       },
       rules: {
-        // https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/order.md
         'import/order': ['error', { alphabetize: { order: 'asc' } }],
+        'unicorn/prefer-node-protocol': 'error',
       },
     },
   ];
