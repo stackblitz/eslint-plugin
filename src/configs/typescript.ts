@@ -6,6 +6,9 @@ export interface TSRuleExtensions {
     variable?: {
       exceptions?: string[];
     };
+    parameter?: {
+      exceptions?: string[];
+    };
   };
 }
 
@@ -32,6 +35,12 @@ export function getNamingConventionRule(
         selector: 'parameter',
         format: ['camelCase'],
         leadingUnderscore: 'allow',
+        ...(extensions?.parameter?.exceptions?.length && {
+          filter: {
+            regex: generateNamingConventionRegex([], extensions?.parameter?.exceptions),
+            match: false,
+          },
+        }),
       },
       {
         selector: 'typeLike',
