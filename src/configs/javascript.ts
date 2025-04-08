@@ -50,8 +50,43 @@ export const jsRules: FlatConfig.Config['rules'] = {
     },
     {
       blankLine: 'any',
-      prev: ['const', 'let'],
-      next: ['const', 'let'],
+      prev: ['const'],
+      next: ['const'],
+    },
+    {
+      blankLine: 'any',
+      prev: ['let'],
+      next: ['let'],
+    },
+    {
+      blankLine: 'always',
+      prev: ['let'],
+      next: ['const'],
+    },
+    {
+      blankLine: 'always',
+      prev: ['const'],
+      next: ['let'],
+    },
+    {
+      blankLine: 'always',
+      prev: ['singleline-const'],
+      next: ['multiline-const'],
+    },
+    {
+      blankLine: 'always',
+      prev: ['multiline-const'],
+      next: ['singleline-const'],
+    },
+    {
+      blankLine: 'always',
+      prev: ['singleline-let'],
+      next: ['multiline-let'],
+    },
+    {
+      blankLine: 'always',
+      prev: ['multiline-let'],
+      next: ['singleline-let'],
     },
     {
       blankLine: 'any',
