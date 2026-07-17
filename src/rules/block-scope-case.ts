@@ -41,10 +41,7 @@ export default createRule({
               const lastStatement = node.consequent[node.consequent.length - 1];
               const indent = ' '.repeat(node.loc.start.column);
 
-              return [
-                fixer.insertTextAfter(colonToken, ' {'),
-                fixer.insertTextAfter(lastStatement, `\n${indent}}`),
-              ];
+              return [fixer.insertTextAfter(colonToken, ' {'), fixer.insertTextAfter(lastStatement, `\n${indent}}`)];
             },
           });
         }

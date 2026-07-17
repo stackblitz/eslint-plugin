@@ -189,6 +189,7 @@ export default createRule<Options, MessageIds>({
             const indent = ' '.repeat(comment.loc.start.column + 1);
 
             const lineStartOffsets: number[] = [];
+
             let currentOffset = 0;
 
             for (const valueLine of valueLines) {
@@ -399,7 +400,12 @@ export default createRule<Options, MessageIds>({
                 };
 
                 if (isLastContentLine && !allowedParagraphEndings.some((ending) => ending === lastChar)) {
-                  context.report({ node: comment, messageId: 'shouldEndWithDot', data: { ...lineData }, fix: appendDot });
+                  context.report({
+                    node: comment,
+                    messageId: 'shouldEndWithDot',
+                    data: { ...lineData },
+                    fix: appendDot,
+                  });
                   break;
                 }
 
