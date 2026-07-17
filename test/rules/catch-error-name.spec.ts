@@ -52,5 +52,58 @@ ruleTester({
         } catch (error) {}
       `,
     },
+    {
+      // references to the parameter are renamed as well
+      code: stripIndent`
+        try {} catch (err) {
+          console.log(err.message, err);
+        }
+      `,
+      errors: [
+        {
+          messageId: 'default',
+        },
+      ],
+      output: stripIndent`
+        try {} catch (error) {
+          console.log(error.message, error);
+        }
+      `,
+    },
+    {
+      // the configured name is used, not a hardcoded one
+      code: stripIndent`
+        try {} catch (error) {}
+      `,
+      options: [
+        {
+          name: 'exception',
+          ignore: [],
+        },
+      ],
+      errors: [
+        {
+          messageId: 'default',
+        },
+      ],
+      output: stripIndent`
+        try {} catch (exception) {}
+      `,
+    },
+    {
+      // no fix when the expected name is already used inside the catch block
+      code: stripIndent`
+        try {} catch (err) {
+          const error = 1;
+          console.log(err, error);
+        }
+      `,
+      errors: [
+        {
+          messageId: 'default',
+        },
+      ],
+      output: null,
+    },
   ],
 });

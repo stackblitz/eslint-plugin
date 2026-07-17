@@ -64,11 +64,22 @@ export default createRule<Options, MessageIds>({
                 fixedName: expectedName,
               },
               fix: (fixer) => {
-                if (node.param) {
-                  return fixer.replaceText(node.param, 'error');
+                if (!node.param) {
+                  return null;
                 }
 
-                return null;
+                // renaming would conflict with an existing usage of the expected name
+                if (new RegExp(`\\b${expectedName}\\b`).test(context.sourceCode.getText(node.body))) {
+                  return null;
+                }
+
+                const variable = context.sourceCode
+                  .getDeclaredVariables(node)
+                  .find(({ name }) => name === originalName);
+
+                const references = variable?.references.map(({ identifier }) => identifier) ?? [];
+
+                return [node.param, ...references].map((identifier) => fixer.replaceText(identifier, expectedName));
               },
             });
           }

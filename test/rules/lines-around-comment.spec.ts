@@ -1520,6 +1520,118 @@ ruleTester({
         allowBlockStart: true,
       },
     },
+    {
+      // fixer inserts an empty line before the comment
+      code: stripIndent`
+        const obj = {
+          // foo
+          a: 1,
+        };
+      `,
+      output: stripIndent`
+        const obj = {
+
+          // foo
+          a: 1,
+        };
+      `,
+      errors: [
+        {
+          messageId: 'before',
+        },
+      ],
+      options: [
+        {
+          ...defaultOptions,
+          allowObjectStart: false,
+        },
+      ],
+    },
+    {
+      // fixer inserts an empty line after the comment
+      code: stripIndent`
+        const obj = {
+          a: 1,
+
+          // foo
+        };
+      `,
+      output: stripIndent`
+        const obj = {
+          a: 1,
+
+          // foo
+
+        };
+      `,
+      errors: [
+        {
+          messageId: 'after',
+        },
+      ],
+      options: [
+        {
+          ...defaultOptions,
+          allowObjectEnd: false,
+        },
+      ],
+    },
+    {
+      // both fixes apply in a single pass
+      code: stripIndent`
+        enum MyEnum {
+          Value,
+          // some comment
+        }
+      `,
+      output: stripIndent`
+        enum MyEnum {
+          Value,
+
+          // some comment
+
+        }
+      `,
+      errors: [
+        {
+          messageId: 'before',
+        },
+        {
+          messageId: 'after',
+        },
+      ],
+      options: [
+        {
+          ...defaultOptions,
+        },
+      ],
+    },
+    {
+      // fixer inserts an empty line before a comment in a member expression chain
+      code: stripIndent`
+        doSomething()
+          .a
+          // foo
+          .b;
+      `,
+      output: stripIndent`
+        doSomething()
+          .a
+
+          // foo
+          .b;
+      `,
+      errors: [
+        {
+          messageId: 'before',
+        },
+      ],
+      options: [
+        {
+          ...defaultOptions,
+        },
+      ],
+    },
   ],
 });
 

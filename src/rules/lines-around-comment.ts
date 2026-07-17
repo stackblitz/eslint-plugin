@@ -344,6 +344,10 @@ export default createRule<Options, MessageIds>({
           node: token,
           messageId,
           fix(fixer) {
+            if (messageId === 'after') {
+              return fixer.insertTextAfterRange(token.range, '\n');
+            }
+
             return fixer.insertTextBeforeRange(range, '\n');
           },
         });

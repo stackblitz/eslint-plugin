@@ -19,6 +19,8 @@ export default createRule({
   },
   defaultOptions: [],
   create: (context) => {
+    const { sourceCode } = context;
+
     return {
       SwitchCase: (node) => {
         if (node.consequent.length > 0 && node.consequent[0].type !== 'BlockStatement') {
@@ -29,6 +31,18 @@ export default createRule({
               line: node.loc.start.line,
             },
             messageId: 'default',
+            fix: (fixer) => {
+              const colonToken = sourceCode.getTokenBefore(node.consequent[0]);
+
+              if (!colonToken) {
+                return null;
+              }
+
+              const lastStatement = node.consequent[node.consequent.length - 1];
+              const indent = ' '.repeat(node.loc.start.column);
+
+              return [fixer.insertTextAfter(colonToken, ' {'), fixer.insertTextAfter(lastStatement, `\n${indent}}`)];
+            },
           });
         }
       },
