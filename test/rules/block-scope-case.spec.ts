@@ -43,6 +43,42 @@ ruleTester({
             break;
         }
       `,
+      output: stripIndent`
+        const foo = 1;
+
+        switch (foo) {
+          case 1: {
+            break;
+          }
+        }
+      `,
+      errors: [
+        {
+          messageId,
+        },
+      ],
+    },
+    {
+      // default case with multiple statements
+      code: stripIndent`
+        const foo = 1;
+
+        switch (foo) {
+          default:
+            console.log(foo);
+            break;
+        }
+      `,
+      output: stripIndent`
+        const foo = 1;
+
+        switch (foo) {
+          default: {
+            console.log(foo);
+            break;
+          }
+        }
+      `,
       errors: [
         {
           messageId,

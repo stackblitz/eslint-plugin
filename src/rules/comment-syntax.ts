@@ -1,3 +1,4 @@
+import type { TSESLint } from '@typescript-eslint/utils';
 import { createRule } from '../util';
 import { oneLine } from '../util/messages';
 
@@ -134,13 +135,20 @@ export default createRule<Options, MessageIds>({
         const comments = sourceCode.getAllComments();
 
         for (const comment of comments) {
+          // start of the comment value, right after the `//` or `/*`
+          const valueStart = comment.range[0] + 2;
+
           if (comment.type === 'Line') {
             const firstChar = comment.value?.charCodeAt(0);
             const secondChar = comment.value[1];
             const lastChar = comment.value[comment.value.length - 1];
 
             if (firstChar !== SPACE_CHARCODE && firstChar !== SLASH_CHARCODE && !isRegion(comment.value)) {
-              context.report({ node: comment, messageId: 'shouldStartWithSpace' });
+              context.report({
+                node: comment,
+                messageId: 'shouldStartWithSpace',
+                fix: (fixer) => fixer.insertTextBeforeRange([valueStart, valueStart], ' '),
+              });
 
               // if this one fails, the others are interpreted incorrectly
               continue;
@@ -151,11 +159,19 @@ export default createRule<Options, MessageIds>({
               isCapital(secondChar) &&
               !isCapitalizedOrAllowed(comment.value.slice(1), ignoredWords)
             ) {
-              context.report({ node: comment, messageId: 'lineCommentCapital' });
+              context.report({
+                node: comment,
+                messageId: 'lineCommentCapital',
+                fix: (fixer) => fixer.replaceTextRange([valueStart + 1, valueStart + 2], secondChar.toLowerCase()),
+              });
             }
 
             if (lastChar === '.' && !comment.value.endsWith('etc.') && !comment.value.endsWith('...')) {
-              context.report({ node: comment, messageId: 'lineCommentEnding' });
+              context.report({
+                node: comment,
+                messageId: 'lineCommentEnding',
+                fix: (fixer) => fixer.removeRange([comment.range[1] - 1, comment.range[1]]),
+              });
             }
 
             continue;
@@ -169,9 +185,36 @@ export default createRule<Options, MessageIds>({
               continue;
             }
 
+            const valueLines = lines;
+            const indent = ' '.repeat(comment.loc.start.column + 1);
+
+            const lineStartOffsets: number[] = [];
+            let currentOffset = 0;
+
+            for (const valueLine of valueLines) {
+              lineStartOffsets.push(currentOffset);
+              currentOffset += valueLine.length + 1;
+            }
+
+            // absolute source range of the line at `index` in the sliced `lines` array
+            const lineRange = (index: number): [number, number] => {
+              const start = valueStart + lineStartOffsets[index + 1];
+
+              return [start, start + valueLines[index + 1].length];
+            };
+
             // verify the first char is a '*'
             if (lines[0] !== STAR) {
-              context.report({ node: comment, messageId: 'shouldStartWithBlock' });
+              context.report({
+                node: comment,
+                messageId: 'shouldStartWithBlock',
+                fix: (fixer) => {
+                  const content = valueLines[0].replace(/^\*+\s*/, '').trim();
+                  const range: [number, number] = [valueStart, valueStart + valueLines[0].length];
+
+                  return fixer.replaceTextRange(range, content ? `*\n${indent}* ${content}` : '*');
+                },
+              });
               continue;
             }
 
@@ -199,12 +242,29 @@ export default createRule<Options, MessageIds>({
 
               if (isLastLine) {
                 if (!BLOCK_COMMENT_END.test(line)) {
-                  context.report({ node: comment, messageId: 'shouldEndWithBlock' });
+                  context.report({
+                    node: comment,
+                    messageId: 'shouldEndWithBlock',
+                    fix: (fixer) => {
+                      const [start] = lineRange(i);
+                      const contentEnd = start + line.replace(/\s+$/, '').length;
+
+                      return fixer.replaceTextRange([contentEnd, comment.range[1] - 2], `\n${indent}`);
+                    },
+                  });
                   break;
                 }
 
                 if (EMPTY_BLOCK_COMMENT_LINE.test(prevLine)) {
-                  context.report({ node: comment, messageId: 'noSpaceBeforeEnd' });
+                  context.report({
+                    node: comment,
+                    messageId: 'noSpaceBeforeEnd',
+                    fix: (fixer) => {
+                      const [prevStart, prevEnd] = lineRange(i - 1);
+
+                      return fixer.removeRange([prevStart - 1, prevEnd]);
+                    },
+                  });
                   break;
                 }
 
@@ -226,7 +286,16 @@ export default createRule<Options, MessageIds>({
 
               if (isCurrentLineJSDoc && !insideCodeBlock) {
                 if (prevLine && !EMPTY_BLOCK_COMMENT_LINE.test(prevLine) && !JS_DOC_REGEX.test(prevLine)) {
-                  context.report({ node: comment, messageId: 'spaceBeforeJSDoc', data: { ...lineData } });
+                  context.report({
+                    node: comment,
+                    messageId: 'spaceBeforeJSDoc',
+                    data: { ...lineData },
+                    fix: (fixer) => {
+                      const [start] = lineRange(i);
+
+                      return fixer.insertTextBeforeRange([start, start], `${indent}*\n`);
+                    },
+                  });
                   break;
                 }
 
@@ -238,7 +307,23 @@ export default createRule<Options, MessageIds>({
               }
 
               if (!isCurrentLineEmpty && !BLOCK_COMMENT_LINE_START.test(line)) {
-                context.report({ node: comment, messageId: 'invalidBlockCommentLine', data: { ...lineData } });
+                context.report({
+                  node: comment,
+                  messageId: 'invalidBlockCommentLine',
+                  data: { ...lineData },
+                  fix: (fixer) => {
+                    const [start] = lineRange(i);
+                    const starMatch = line.match(/^\s*\*/);
+
+                    if (starMatch) {
+                      return fixer.insertTextAfterRange([start, start + starMatch[0].length], ' ');
+                    }
+
+                    const leadingWhitespace = line.match(/^\s*/)?.[0] ?? '';
+
+                    return fixer.insertTextAfterRange([start, start + leadingWhitespace.length], '* ');
+                  },
+                });
                 break;
               }
 
@@ -249,7 +334,14 @@ export default createRule<Options, MessageIds>({
                 prevListItemIndentation = line.match(LIST_ITEM_INDENTATION)?.[1].length;
 
                 if (spaces !== 1) {
-                  context.report({ node: comment, messageId: 'invalidListItem', data: { ...lineData } });
+                  context.report({
+                    node: comment,
+                    messageId: 'invalidListItem',
+                    data: { ...lineData },
+                    fix: (fixer) => {
+                      return fixer.replaceTextRange(lineRange(i), line.replace(/^(\s*\*\s*(?:-|\d\.))\s*/, '$1 '));
+                    },
+                  });
                   break;
                 }
 
@@ -276,7 +368,20 @@ export default createRule<Options, MessageIds>({
                 const firstChar = text[0];
 
                 if (isLetter(firstChar) && !(isCapital(firstChar) || isCapitalizedOrAllowed(text, ignoredWords))) {
-                  context.report({ node: comment, messageId: 'paragraphCapitalized', data: { ...lineData } });
+                  context.report({
+                    node: comment,
+                    messageId: 'paragraphCapitalized',
+                    data: { ...lineData },
+                    fix: (fixer) => {
+                      const [start] = lineRange(i);
+                      const prefixLength = line.length - text.length;
+
+                      return fixer.replaceTextRange(
+                        [start + prefixLength, start + prefixLength + 1],
+                        firstChar.toUpperCase(),
+                      );
+                    },
+                  });
                   break;
                 }
               }
@@ -287,8 +392,14 @@ export default createRule<Options, MessageIds>({
               if (isNextLineEmpty || isLastContentLine || isNextLineCodeBlock) {
                 const lastChar = line[line.length - 1];
 
+                const appendDot = (fixer: TSESLint.RuleFixer) => {
+                  const [start] = lineRange(i);
+
+                  return fixer.insertTextAfterRange([start, start + line.replace(/\s+$/, '').length], '.');
+                };
+
                 if (isLastContentLine && !allowedParagraphEndings.some((ending) => ending === lastChar)) {
-                  context.report({ node: comment, messageId: 'shouldEndWithDot', data: { ...lineData } });
+                  context.report({ node: comment, messageId: 'shouldEndWithDot', data: { ...lineData }, fix: appendDot });
                   break;
                 }
 
@@ -297,6 +408,7 @@ export default createRule<Options, MessageIds>({
                     node: comment,
                     messageId: 'invalidParagraphEnding',
                     data: { ...lineData, allowedParagraphEndings: `[${allowedParagraphEndings.join(' ')}]` },
+                    fix: appendDot,
                   });
 
                   break;

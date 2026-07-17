@@ -396,6 +396,11 @@ ruleTester({
          * -foo
          */
       `,
+      output: stripIndent`
+        /**
+         * - foo
+         */
+      `,
       errors: [
         {
           messageId: 'invalidListItem',
@@ -406,6 +411,11 @@ ruleTester({
       code: stripIndent`
         /**
          * 1.foo
+         */
+      `,
+      output: stripIndent`
+        /**
+         * 1. foo
          */
       `,
       errors: [
@@ -421,6 +431,12 @@ ruleTester({
          *    misaligned
          */
       `,
+      output: stripIndent`
+        /**
+         * - foo
+         *    Misaligned
+         */
+      `,
       errors: [
         {
           messageId: 'paragraphCapitalized',
@@ -434,9 +450,198 @@ ruleTester({
          *     misaligned
          */
       `,
+      output: stripIndent`
+        /**
+         * 1. foo
+         *     Misaligned
+         */
+      `,
       errors: [
         {
           messageId: 'paragraphCapitalized',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        //foo bar
+      `,
+      output: stripIndent`
+        // foo bar
+      `,
+      errors: [
+        {
+          messageId: 'shouldStartWithSpace',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        // Foo bar
+      `,
+      output: stripIndent`
+        // foo bar
+      `,
+      errors: [
+        {
+          messageId: 'lineCommentCapital',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        // foo bar.
+      `,
+      output: stripIndent`
+        // foo bar
+      `,
+      errors: [
+        {
+          messageId: 'lineCommentEnding',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /* foo
+         * bar.
+         */
+      `,
+      output: stripIndent`
+        /**
+         * foo
+         * bar.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'shouldStartWithBlock',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Foo. */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'shouldEndWithBlock',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Foo.
+         *
+         */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'noSpaceBeforeEnd',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Foo.
+         * @param bar
+         */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         *
+         * @param bar
+         */
+      `,
+      errors: [
+        {
+          messageId: 'spaceBeforeJSDoc',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         *Foo.
+         */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidBlockCommentLine',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         Foo.
+         */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidBlockCommentLine',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Foo
+         */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'shouldEndWithDot',
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        /**
+         * Foo
+         *
+         * Bar.
+         */
+      `,
+      output: stripIndent`
+        /**
+         * Foo.
+         *
+         * Bar.
+         */
+      `,
+      errors: [
+        {
+          messageId: 'invalidParagraphEnding',
         },
       ],
     },
@@ -465,6 +670,12 @@ ruleTesterForJSONC().run(ruleName, rule, {
       code: stripIndent`
       {
         // Oopsie I've been a baaad boy.
+        "despicable": 3
+      }
+      `,
+      output: stripIndent`
+      {
+        // oopsie I've been a baaad boy
         "despicable": 3
       }
       `,
