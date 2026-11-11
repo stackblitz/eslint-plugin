@@ -9,10 +9,10 @@ dependencies:
     specifier: ^5.9.0
     version: 5.10.0(eslint@10.14.0)
   '@typescript-eslint/parser':
-    specifier: ^8.56.0
+    specifier: ^8.58.0
     version: 8.72.2(eslint@10.14.0)(typescript@5.9.3)
   '@typescript-eslint/utils':
-    specifier: ^8.56.0
+    specifier: ^8.58.0
     version: 8.72.2(eslint@10.14.0)(typescript@5.9.3)
   common-tags:
     specifier: ^1.8.2
@@ -33,7 +33,7 @@ dependencies:
     specifier: ^65.0.0
     version: 65.0.1(eslint@10.14.0)
   typescript-eslint:
-    specifier: ^8.56.0
+    specifier: ^8.58.0
     version: 8.72.2(eslint@10.14.0)(typescript@5.9.3)
 
 devDependencies:
@@ -2093,7 +2093,7 @@ packages:
     hasBin: true
     dependencies:
       cac: 6.7.14
-      debug: 4.3.5
+      debug: 4.4.3
       pathe: 1.1.2
       picocolors: 1.0.1
       vite: 5.3.4(@types/node@20.14.11)
