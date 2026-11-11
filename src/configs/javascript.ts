@@ -133,6 +133,7 @@ export const jsRules: FlatConfig.Config['rules'] = {
       allowEnumEnd: true,
       allowTypeStart: true,
       allowTypeEnd: false,
+      allowModuleStart: true,
       allowSwitchStart: true,
       allowSwitchEnd: false,
       allowMemberCallExpression: true,
