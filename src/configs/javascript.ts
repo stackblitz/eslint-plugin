@@ -5,7 +5,7 @@ export const jsFileExtensions = ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs'];
 export const jsRules: FlatConfig.Config['rules'] = {
   'consistent-return': 'error',
 
-  'multiline-comment-style': ['error', 'starred-block'],
+  '@stylistic/multiline-comment-style': ['error', 'starred-block'],
 
   curly: ['error', 'all'],
 
@@ -36,7 +36,7 @@ export const jsRules: FlatConfig.Config['rules'] = {
     },
   ],
 
-  'padding-line-between-statements': [
+  '@stylistic/padding-line-between-statements': [
     'error',
     {
       blankLine: 'always',
@@ -107,6 +107,11 @@ export const jsRules: FlatConfig.Config['rules'] = {
       blankLine: 'always',
       prev: 'if',
       next: '*',
+    },
+    {
+      blankLine: 'any',
+      prev: 'function-overload',
+      next: 'function',
     },
   ],
 

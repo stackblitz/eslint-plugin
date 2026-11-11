@@ -4,7 +4,7 @@
 
 ## Rule Details
 
-This rule extends the base [`@stylistic/ts/lines-around-comment`](https://eslint.style/rules/ts/lines-around-comment) rule.
+This rule extends the base [`@stylistic/lines-around-comment`](https://eslint.style/rules/lines-around-comment) rule.
 It adds support for allowing comments at the start and end of `switch` statements, and fixes a bug with enums, arrays, and object literals.
 
 ## How to use
@@ -17,7 +17,7 @@ It adds support for allowing comments at the start and end of `switch` statement
 
 ## Options
 
-See [`@stylistic/ts/lines-around-comment`](https://eslint.style/rules/ts/lines-around-comment#options) options.
+See [`@stylistic/lines-around-comment`](https://eslint.style/rules/lines-around-comment#options) options.
 This rule adds the following options:
 
 ```ts

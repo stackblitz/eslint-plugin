@@ -9,7 +9,7 @@ export function ruleTester(options: TestCasesOptions & RuleTesterInitOptions) {
   return _run({
     recursive: false,
     verifyAfterFix: false,
-    parser: tsParser as Linter.ParserModule,
+    parser: tsParser as Linter.Parser,
     ...options,
   });
 }

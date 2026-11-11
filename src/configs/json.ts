@@ -7,7 +7,7 @@ import { getFiles } from './utils';
 export const jsonFileExtensions = ['**/*.json', '**/*.json', '*.json5', '**/*.json5', '*.jsonc', '**/*.jsonc'];
 
 export const jsonConfigs = [
-  ...eslintPluginJSONC.configs['flat/recommended-with-jsonc'].map((config) => {
+  ...eslintPluginJSONC.configs['recommended-with-jsonc'].map((config) => {
     return {
       ...config,
       files: getFiles(config, jsonFileExtensions),
