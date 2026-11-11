@@ -18,8 +18,8 @@ dependencies:
     specifier: ^1.8.2
     version: 1.8.2
   eslint-config-prettier:
-    specifier: ^9.1.0
-    version: 9.1.0(eslint@10.14.0)
+    specifier: ^10.1.0
+    version: 10.1.8(eslint@10.14.0)
   eslint-plugin-import-x:
     specifier: ^4.16.2
     version: 4.18.1(@typescript-eslint/utils@8.72.2)(eslint@10.14.0)
@@ -27,8 +27,8 @@ dependencies:
     specifier: ^3.0.0
     version: 3.4.2(eslint@10.14.0)
   eslint-plugin-prettier:
-    specifier: ^5.1.3
-    version: 5.2.1(eslint-config-prettier@9.1.0)(eslint@10.14.0)(prettier@3.3.3)
+    specifier: ^5.1.0
+    version: 5.5.7(eslint-config-prettier@10.1.8)(eslint@10.14.0)(prettier@3.3.3)
   eslint-plugin-unicorn:
     specifier: ^65.0.0
     version: 65.0.1(eslint@10.14.0)
@@ -85,6 +85,10 @@ packages:
     dependencies:
       hashery: 1.5.1
       keyv: 5.6.0
+
+  /@dual-bundle/import-meta-resolve@4.2.1:
+    resolution: {integrity: sha512-id+7YRUgoUX6CgV0DtuhirQWodeeA7Lf4i2x71JS/vtA5pRb/hIGWlw+G6MeXvsM+MXrz0VAydTGElX1rAfgPg==}
+    dev: false
 
   /@esbuild/aix-ppc64@0.21.5:
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -392,11 +396,6 @@ packages:
   /@ota-meshi/ast-token-store@0.3.0:
     resolution: {integrity: sha512-XRO0zi2NIUKq2lUk3T1ecFSld1fMWRKE6naRFGkgkdeosx7IslyUKNv5Dcb5PJTja9tHJoFu0v/7yEpAkrkrTg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
-    dev: false
-
-  /@pkgr/core@0.1.1:
-    resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
-    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     dev: false
 
   /@pkgr/core@0.3.6:
@@ -1175,8 +1174,8 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
-  /eslint-config-prettier@9.1.0(eslint@10.14.0):
-    resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
+  /eslint-config-prettier@10.1.8(eslint@10.14.0):
+    resolution: {integrity: sha512-82GZUjRS0p/jganf6q1rEO25VSoHH0hKPCTrgillPjdI/3bgBhAE1QzHrHTizjpRvy6pGAvKjDJtk2pF9NDq8w==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -1264,13 +1263,13 @@ packages:
       - '@eslint/json'
     dev: false
 
-  /eslint-plugin-prettier@5.2.1(eslint-config-prettier@9.1.0)(eslint@10.14.0)(prettier@3.3.3):
-    resolution: {integrity: sha512-gH3iR3g4JfF+yYPaJYkN7jEl9QbweL/YfkoRlNnuIEHEz1vHVlCmWOS+eGGiRuzHQXdJFCOTxRgvju9b8VUmrw==}
+  /eslint-plugin-prettier@5.5.7(eslint-config-prettier@10.1.8)(eslint@10.14.0)(prettier@3.3.3):
+    resolution: {integrity: sha512-WjHyn3GrFd+ZR0rzsLiM4zJZ35PZMOE0SUIxzGmnWNG0126yNfJKJzObmmkYDwHJfGlkz3PSlzyG9ez/LJntwg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       '@types/eslint': '>=8.0.0'
       eslint: '>=8.0.0'
-      eslint-config-prettier: '*'
+      eslint-config-prettier: '>= 7.0.0 <10.0.0 || >=10.1.0'
       prettier: '>=3.0.0'
     peerDependenciesMeta:
       '@types/eslint':
@@ -1279,10 +1278,10 @@ packages:
         optional: true
     dependencies:
       eslint: 10.14.0
-      eslint-config-prettier: 9.1.0(eslint@10.14.0)
+      eslint-config-prettier: 10.1.8(eslint@10.14.0)
       prettier: 3.3.3
-      prettier-linter-helpers: 1.0.0
-      synckit: 0.9.1
+      prettier-linter-helpers: 1.0.1
+      synckit: 0.12.3
     dev: false
 
   /eslint-plugin-unicorn@65.0.1(eslint@10.14.0):
@@ -1820,8 +1819,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  /prettier-linter-helpers@1.0.0:
-    resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==}
+  /prettier-linter-helpers@1.0.1:
+    resolution: {integrity: sha512-SxToR7P8Y2lWmv/kTzVLC1t/GDI2WGjMwNhLLE9qtH8Q13C+aEmuRlzDst4Up4s0Wc8sF2M+J57iB3cMLqftfg==}
     engines: {node: '>=6.0.0'}
     dependencies:
       fast-diff: 1.3.0
@@ -1957,12 +1956,12 @@ packages:
       '@pkgr/core': 0.3.6
     dev: false
 
-  /synckit@0.9.1:
-    resolution: {integrity: sha512-7gr8p9TQP6RAHusBOSLs46F4564ZrjV8xFmw5zCmgmhGUcw2hxsShhJ6CEiHQMgPDwAQ1fWHPM0ypc4RMAig4A==}
+  /synckit@0.12.3:
+    resolution: {integrity: sha512-U+/AXT6LWsxnj2vz9HeUuPWBNgdWxjyIEjEPdbJARC9txmgPzo2VEdqnFo4hHaNyMPtycyVJrSaQYeQv/PoyyA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
-      '@pkgr/core': 0.1.1
-      tslib: 2.6.3
+      '@dual-bundle/import-meta-resolve': 4.2.1
+      '@pkgr/core': 0.3.6
     dev: false
 
   /tinybench@2.8.0:
@@ -1993,10 +1992,6 @@ packages:
       typescript: '>=4.8.4'
     dependencies:
       typescript: 6.0.3
-
-  /tslib@2.6.3:
-    resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
-    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
