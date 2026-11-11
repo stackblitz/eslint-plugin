@@ -8,11 +8,12 @@ on:
 
 jobs:
   test:
-    name: Test
+    name: Test (Node ${{ matrix.node-version }}, ESLint ${{ matrix.eslint-version }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [20, 22, 24]
+        eslint-version: [9, 10]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,6 +27,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Install ESLint ${{ matrix.eslint-version }}
+        run: pnpm add -D eslint@${{ matrix.eslint-version }}
 
       - name: Build
         run: pnpm build

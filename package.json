@@ -31,7 +31,8 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "eslint": "^10.0.0"
+    "eslint": "^9.38.0 || ^10.0.0",
+    "prettier": "^3.0.0"
   },
   "dependencies": {
     "@stylistic/eslint-plugin": "^5.9.0",

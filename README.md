@@ -10,7 +10,7 @@ Install `@blitz/eslint-plugin` together with [ESLint](https://eslint.org) and [P
 $ pnpm add -D eslint prettier @blitz/eslint-plugin
 ```
 
-Requires ESLint 10 and Node.js `^20.19.0 || ^22.13.0 || >=24`.
+Requires ESLint `^9.38.0 || ^10.0.0`, Prettier 3 and Node.js `^20.19.0 || ^22.13.0 || >=24`.
 
 ## Usage
 
