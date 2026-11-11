@@ -39,3 +39,16 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+  # The single check for branch protection to require. Without `always()`, a failed matrix
+  # would skip this job, and GitHub treats a skipped required check as passing.
+  test-result:
+    name: Test
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check test matrix
+        run: |
+          echo "Test matrix result: ${{ needs.test.result }}"
+          test "${{ needs.test.result }}" = success
