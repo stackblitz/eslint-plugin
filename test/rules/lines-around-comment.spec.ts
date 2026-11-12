@@ -1,6 +1,9 @@
 import { stripIndent } from 'common-tags';
+import { jsRules } from '../../src/configs/javascript';
 import rule, { defaultOptions, ruleName } from '../../src/rules/lines-around-comment';
 import { ruleTester, ruleTesterForJSONC } from '../utils';
+
+const [, recommendedOptions] = jsRules!['@blitz/lines-around-comment'] as [string, typeof defaultOptions];
 
 ruleTester({
   name: ruleName,
@@ -760,6 +763,58 @@ ruleTester({
         },
       ],
     },
+    {
+      code: stripIndent`
+        declare namespace Foo {
+          /** some comment */
+          export const a: 1;
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowModuleStart: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        namespace Foo {
+          // some comment
+          export const a = 1;
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowModuleStart: true,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        declare module 'foo' {
+          /* some comment */
+          export const a: 1;
+        }
+      `,
+      options: [
+        {
+          ...defaultOptions,
+          allowModuleStart: true,
+        },
+      ],
+    },
+    {
+      // prettier removes blank lines at the start of a block, so the recommended config has to allow this
+      code: stripIndent`
+        declare namespace Foo {
+          /** some comment */
+          export const a: 1;
+        }
+      `,
+      options: [recommendedOptions],
+    },
   ],
   invalid: [
     {
@@ -1471,6 +1526,49 @@ ruleTester({
           allowTypeEnd: false,
         },
       ],
+    },
+    {
+      code: stripIndent`
+        declare namespace Foo {
+          /** some comment */
+          export const a: 1;
+        }
+      `,
+      output: stripIndent`
+        declare namespace Foo {
+
+          /** some comment */
+          export const a: 1;
+        }
+      `,
+      errors: [
+        {
+          messageId: 'before',
+          message: 'Expected line before comment.',
+        },
+      ],
+      options: [
+        {
+          ...defaultOptions,
+          allowModuleStart: false,
+        },
+      ],
+    },
+    {
+      code: stripIndent`
+        declare namespace Foo {
+          export const a: 1;
+          /** some comment */
+          export const b: 1;
+        }
+      `,
+      errors: [
+        {
+          messageId: 'before',
+          message: 'Expected line before comment.',
+        },
+      ],
+      options: [recommendedOptions],
     },
     {
       code: stripIndent`
