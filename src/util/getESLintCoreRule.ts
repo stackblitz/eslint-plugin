@@ -1,6 +1,6 @@
-import jsRules from '@stylistic/eslint-plugin-ts';
+import stylistic from '@stylistic/eslint-plugin';
 import type { TSESLint } from '@typescript-eslint/utils';
 
-export function getESLintCoreRule(ruleId: keyof typeof jsRules.rules) {
-  return jsRules.rules[ruleId] as unknown as TSESLint.RuleModule<any, readonly any[]>;
+export function getESLintCoreRule(ruleId: keyof typeof stylistic.rules) {
+  return stylistic.rules[ruleId] as unknown as TSESLint.RuleModule<any, readonly any[]>;
 }
