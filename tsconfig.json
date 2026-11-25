@@ -14,7 +14,7 @@
     "target": "ES2021",
     "lib": ["ES2021"],
     "types": ["node"],
-    "module": "Node16",
+    "module": "Node20",
     "esModuleInterop": true,
     "declaration": false,
     "declarationMap": false,

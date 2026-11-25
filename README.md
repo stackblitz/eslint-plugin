@@ -4,37 +4,22 @@ An ESLint plugin to enforce a consistent code styles across StackBlitz projects
 
 ## Installation
 
-You'll first need to install [ESLint](http://eslint.org):
+Install `@blitz/eslint-plugin` together with [ESLint](https://eslint.org) and [Prettier](https://prettier.io):
 
 ```
-$ yarn add -D eslint
+$ pnpm add -D eslint prettier @blitz/eslint-plugin
 ```
 
-Next, install `@blitz/eslint-plugin`:
-
-```
-$ yarn add -D @blitz/eslint-plugin
-```
-
-**Note:** If you installed ESLint globally (using the `-g` flag) then you must also install `@blitz/eslint-plugin` globally.
+Requires ESLint `^9.38.0 || ^10.0.0`, Prettier 3 and Node.js `^20.19.0 || ^22.13.0 || >=24`.
 
 ## Usage
 
-Add `@blitz/eslint-plugin` to the extends section of your `.eslintrc.js` or `.eslintrc.json` configuration file and
-and configure `parser` and `parserOptions`. For the plugin, you can omit the `eslint-plugin-`:
+Add the recommended config to your `eslint.config.mjs`:
 
-```json
-{
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": 2019,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "modules": true
-    }
-  },
-  "extends": ["plugin:@blitz/recommended"]
-}
+```js
+import blitzPlugin from '@blitz/eslint-plugin';
+
+export default [...blitzPlugin.configs.recommended()];
 ```
 
 ## Custom Rules
