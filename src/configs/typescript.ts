@@ -82,8 +82,6 @@ export function tsRules(extensions?: TSRuleExtensions): FlatConfig.Config['rules
 
     '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
 
-    '@stylistic/ts/type-annotation-spacing': 'error',
-
     '@typescript-eslint/explicit-member-accessibility': [
       'error',
       {
@@ -100,8 +98,6 @@ export function tsRules(extensions?: TSRuleExtensions): FlatConfig.Config['rules
         'ts-check': false,
       },
     ],
-
-    '@stylistic/ts/lines-around-comment': 'off',
   };
 }
 

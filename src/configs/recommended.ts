@@ -1,4 +1,4 @@
-import stylisticTS from '@stylistic/eslint-plugin-ts';
+import stylistic from '@stylistic/eslint-plugin';
 import * as tsParser from '@typescript-eslint/parser';
 import type { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
 import pluginImport from 'eslint-plugin-import-x';
@@ -30,6 +30,7 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       files: jsFileExtensions,
       ...tseslint.configs.disableTypeChecked,
       plugins: {
+        '@stylistic': stylistic,
         '@blitz': {
           rules: blitzRules,
         },
@@ -49,7 +50,7 @@ export function recommended(extenions?: RuleExtensions): FlatConfig.ConfigArray 
       name: 'blitz/recommended-ts',
       files: tsFileExtensions,
       plugins: {
-        '@stylistic/ts': stylisticTS,
+        '@stylistic': stylistic,
         '@blitz': {
           rules: blitzRules,
         },
