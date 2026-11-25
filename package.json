@@ -21,7 +21,7 @@
     "prepack": "pnpm run build"
   },
   "engines": {
-    "node": "^18.0.0 || ^20.0.0"
+    "node": "^18.0.0 || ^20.0.0 || ^22.0.0 || >=24"
   },
   "files": [
     "dist",
